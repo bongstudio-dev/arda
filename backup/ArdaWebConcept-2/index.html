@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>arda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Text:wght@400;500;600;700&family=Montaga&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.18.0/dist/framer-motion.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: #EDECE6; overflow-x: hidden; font-family: 'Red Hat Text', sans-serif; }
+
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marqueeScroll 38s linear infinite;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #EDECE6; }
+    ::-webkit-scrollbar-thumb { background: #56334B; border-radius: 3px; }
+
+    a { text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const {
+      motion,
+      AnimatePresence,
+      useScroll,
+      useTransform,
+      useInView,
+      useMotionValue,
+      useSpring,
+    } = Motion;
+
+    const { useRef, useState, useEffect } = React;
+
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    const C = {
+      bg:      '#EDECE6',
+      purple:  '#56334B',
+      orange:  '#EF5B2A',
+      light:   '#E9E9E1',
+      cream:   '#FBF0CA',
+      pink:    '#F4D6CC',
+      gray:    '#858585',
+      black:   '#1A1410',
+    };
+
+    /* ─── PRODUCTS ───────────────────────────────────────────── */
+    const products = [
+      { name: 'biker navy',   price: '$89.990', shipping: 'Envío gratis sobre $60.000', img: 'assets/product.png' },
+      { name: 'top navy',     price: '$89.990', shipping: 'Envío gratis sobre $60.000', img: 'assets/top.png' },
+      { name: 'biker arda',   price: '$89.990', shipping: 'Envío gratis sobre $60.000', img: 'assets/biker.png' },
+      { name: 'jacket arda',  price: '$89.990', shipping: 'Envío gratis sobre $60.000', img: 'assets/jacket.png' },
+    ];
+
+    /* ─── SVG ICONS ──────────────────────────────────────────── */
+    function IconSearch({ size = 22, color = C.light }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
+          <circle cx="15.94" cy="16.32" r="12.53" stroke={color} strokeWidth="3.8" />
+          <line x1="26.5" y1="27" x2="39" y2="39.5" stroke={color} strokeWidth="3.8" strokeLinecap="round" />
+        </svg>
+      );
+    }
+
+    function IconCart({ size = 22, color = C.light }) {
+      return (
+        <svg width={size} height={size} viewBox="0 0 28 32" fill="none">
+          <rect x="2" y="10" width="24" height="20" rx="2" stroke={color} strokeWidth="2.2" />
+          <path d="M9 10V8a5 5 0 0 1 10 0v2" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+        </svg>
+      );
+    }
+
+    function ArdaLogoMark({ color = C.light }) {
+      return (
+        <img src="assets/logo-full.svg" alt="arda" style={{
+          height: 20,
+          filter: color === C.light ? 'brightness(0) invert(1)' : 'none',
+          display: 'block',
+        }} />
+      );
+    }
+
+    /* ─── PRELOADER ──────────────────────────────────────────── */
+    function Preloader({ onComplete }) {
+      return (
+        <motion.div
+          key="preloader"
+          initial={{ opacity: 1 }}
+          exit={{ y: '-100%' }}
+          transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+          style={{
+            position: 'fixed', inset: 0,
+            backgroundColor: C.orange,
+            zIndex: 200,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <div style={{ position: 'relative', height: 64 }}>
+            {/* Ghost outline — dimmed base */}
+            <img
+              src="assets/logo-full.svg"
+              alt=""
+              aria-hidden="true"
+              style={{ height: 64, display: 'block', opacity: 0.18 }}
+            />
+            {/* Fill layer — clips from bottom to top */}
+            <motion.div
+              initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
+              animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+              transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1], delay: 0.25 }}
+              onAnimationComplete={() => setTimeout(onComplete, 300)}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                overflow: 'hidden',
+              }}
+            >
+              <img
+                src="assets/logo-full.svg"
+                alt="arda"
+                style={{ height: 64, display: 'block' }}
+              />
+            </motion.div>
+          </div>
+        </motion.div>
+      );
+    }
+
+
+    function Nav() {
+      const navItems = ['shop', 'about'];
+
+      return (
+        <nav style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0,
+          zIndex: 20,
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          padding: '22px 50px 0',
+          pointerEvents: 'none',
+        }}>
+          {/* Logo */}
+          <motion.div
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            style={{ paddingTop: 4, pointerEvents: 'auto', cursor: 'pointer' }}
+          >
+            <ArdaLogoMark height={22} />
+          </motion.div>
+
+          {/* Center links */}
+          <div style={{ display: 'flex', gap: 120, paddingTop: 6 }}>
+            {navItems.map((item, i) => (
+              <motion.a
+                key={item}
+                href="#"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.15 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ opacity: 0.7 }}
+                style={{
+                  fontFamily: "'Red Hat Text', sans-serif",
+                  fontWeight: 700,
+                  fontSize: 22,
+                  letterSpacing: '-0.02em',
+                  color: C.light,
+                  pointerEvents: 'auto',
+                  cursor: 'pointer',
+                }}
+              >
+                {item}
+              </motion.a>
+            ))}
+          </div>
+
+          {/* Icons stacked vertically */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 14, pointerEvents: 'auto' }}>
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              whileHover={{ scale: 1.12 }}
+              whileTap={{ scale: 0.95 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            >
+              <IconCart size={24} color={C.light} />
+            </motion.button>
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              whileHover={{ scale: 1.12 }}
+              whileTap={{ scale: 0.95 }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            >
+              <IconSearch size={24} color={C.light} />
+            </motion.button>
+          </div>
+        </nav>
+      );
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    function Hero() {
+      const ref = useRef(null);
+      const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+      const y = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
+      const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+      const scrollScale = useTransform(scrollYProgress, [0, 1], [1.0, 1.1]);
+
+      return (
+        <section ref={ref} style={{
+          position: 'relative',
+          width: '100%',
+          height: '100vh',
+          overflow: 'hidden',
+          backgroundColor: '#D8D5CF',
+        }}>
+          <Nav />
+
+          {/* Hero image: enters scale 1.3→1.0, scroll-driven scale + parallax */}
+          <motion.div
+            initial={{ scale: 1.3, opacity: 0 }}
+            animate={{ scale: 1.0, opacity: 1 }}
+            transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              position: 'absolute', inset: 0,
+              y,
+              scale: scrollScale,
+            }}
+          >
+            <img
+              src="assets/hero.png"
+              alt="arda hero"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center 20%',
+                display: 'block',
+              }}
+            />
+          </motion.div>
+
+          {/* Scroll hint */}
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.8, duration: 0.8 }}
+            style={{
+              position: 'absolute',
+              bottom: 28,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 6,
+              opacity,
+            }}
+          >
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
+              style={{
+                width: 1.5,
+                height: 36,
+                backgroundColor: C.light,
+                borderRadius: 1,
+                opacity: 0.5,
+              }}
+            />
+          </motion.div>
+        </section>
+      );
+    }
+
+    /* ─── MARQUEE ────────────────────────────────────────────── */
+    function Marquee() {
+      const text = 'PRODUCTOS DESTACADOS';
+      const repeat = 8;
+      const ref = useRef(null);
+      const inView = useInView(ref, { once: true });
+
+      return (
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5 }}
+          style={{
+            backgroundColor: C.purple,
+            overflow: 'hidden',
+            paddingTop: 14,
+            paddingBottom: 14,
+            cursor: 'default',
+            userSelect: 'none',
+          }}
+        >
+          <div className="marquee-track">
+            {Array.from({ length: repeat * 2 }).map((_, i) => (
+              <span
+                key={i}
+                style={{
+                  fontFamily: "'Red Hat Text', sans-serif",
+                  fontWeight: 400,
+                  fontSize: 'clamp(10px, 1vw, 15px)',
+                  letterSpacing: '0.12em',
+                  color: i % 2 === 0 ? C.pink : `rgba(244,214,204,0.28)`,
+                  paddingRight: 60,
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                {text}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+      );
+    }
+
+    /* ─── PRODUCT CARD ───────────────────────────────────────── */
+    function ProductCard({ name, price, shipping, img, index }) {
+      const ref = useRef(null);
+      const inView = useInView(ref, { once: true, margin: '-60px 0px' });
+      const [hovered, setHovered] = useState(false);
+
+      return (
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 50 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{
+            duration: 0.75,
+            delay: index * 0.13,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+          onHoverStart={() => setHovered(true)}
+          onHoverEnd={() => setHovered(false)}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            cursor: 'pointer',
+            flex: '1 1 0',
+            minWidth: 0,
+          }}
+        >
+          {/* Image card */}
+          <motion.div
+            animate={{}}
+            style={{
+              position: 'relative',
+              overflow: 'hidden',
+              aspectRatio: '379 / 487',
+              backgroundColor: C.bg,
+            }}
+          >
+            {/* Vertical product name */}
+            <motion.div
+              animate={{ x: hovered ? 4 : 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                left: 16,
+                zIndex: 3,
+              }}
+            >
+              <span style={{
+                fontFamily: "'Montaga', serif",
+                fontSize: 'clamp(14px, 1.6vw, 32px)',
+                color: C.purple,
+                writingMode: 'vertical-rl',
+                textOrientation: 'mixed',
+                transform: 'rotate(180deg)',
+                letterSpacing: '-0.03em',
+                lineHeight: 1,
+                display: 'block',
+                opacity: 0.9,
+              }}>
+                {name}
+              </span>
+            </motion.div>
+
+            {/* Product image */}
+            <motion.img
+              src={img}
+              alt={name}
+              animate={{ scale: hovered ? 1.04 : 1 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                objectPosition: 'center bottom',
+                display: 'block',
+              }}
+            />
+
+            {/* Hover overlay */}
+            <motion.div
+              animate={{ opacity: hovered ? 1 : 0 }}
+              transition={{ duration: 0.25 }}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: `linear-gradient(to top, rgba(86,51,75,0.08), transparent)`,
+                pointerEvents: 'none',
+              }}
+            />
+
+            {/* Add to cart button */}
+            <motion.button
+              initial={false}
+              animate={{
+                opacity: hovered ? 1 : 0,
+                y: hovered ? 0 : 10,
+              }}
+              transition={{ duration: 0.25 }}
+              style={{
+                position: 'absolute',
+                bottom: 16,
+                right: 16,
+                background: C.purple,
+                border: 'none',
+                color: C.light,
+                fontFamily: "'Red Hat Text', sans-serif",
+                fontWeight: 600,
+                fontSize: 12,
+                letterSpacing: '0.06em',
+                padding: '10px 18px',
+                cursor: 'pointer',
+                textTransform: 'uppercase',
+              }}
+            >
+              Agregar
+            </motion.button>
+          </motion.div>
+
+          {/* Price info */}
+          <motion.div
+            animate={{ opacity: inView ? 1 : 0 }}
+            transition={{ delay: index * 0.13 + 0.3 }}
+            style={{ paddingTop: 12, paddingBottom: 4 }}
+          >
+            <div style={{
+              fontFamily: "'Red Hat Text', sans-serif",
+              fontWeight: 500,
+              fontSize: 'clamp(13px, 1.1vw, 18px)',
+              color: C.black,
+              letterSpacing: '-0.01em',
+            }}>
+              {price}
+            </div>
+            <div style={{
+              fontFamily: "'Red Hat Text', sans-serif",
+              fontWeight: 400,
+              fontSize: 'clamp(11px, 0.8vw, 14px)',
+              color: C.gray,
+              marginTop: 3,
+            }}>
+              {shipping}
+            </div>
+          </motion.div>
+        </motion.div>
+      );
+    }
+
+    /* ─── PRODUCTS SECTION ───────────────────────────────────── */
+    function ProductsSection() {
+      const ref = useRef(null);
+      const inView = useInView(ref, { once: true, margin: '-80px' });
+
+      return (
+        <section style={{
+          backgroundColor: C.bg,
+          padding: 'clamp(32px, 5vw, 70px) clamp(20px, 4vw, 60px)',
+        }}>
+          {/* Section heading */}
+          <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              marginBottom: 'clamp(24px, 3vw, 48px)',
+            }}
+          >
+          </motion.div>
+
+          {/* 4-column grid */}
+          <div style={{
+            display: 'flex',
+            gap: 'clamp(8px, 1.5vw, 22px)',
+            width: '100%',
+          }}>
+            {products.map((p, i) => (
+              <ProductCard key={p.name} {...p} index={i} />
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    /* ─── STAY COOL ──────────────────────────────────────────── */
+    function StayCool() {
+      const ref = useRef(null);
+      const inView = useInView(ref, { once: true, margin: '-100px' });
+
+      return (
+        <section
+          ref={ref}
+          style={{
+            backgroundColor: C.orange,
+            padding: 'clamp(48px, 7vw, 110px) clamp(24px, 5vw, 80px)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            overflow: 'hidden',
+            minHeight: 'clamp(220px, 28vw, 400px)',
+          }}
+        >
+          {/* stay cool. */}
+          <motion.span
+            initial={{ opacity: 0, x: -60 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              fontFamily: "'Montaga', serif",
+              fontSize: 'clamp(52px, 8vw, 130px)',
+              lineHeight: 0.9,
+              letterSpacing: '-0.04em',
+              color: C.light,
+              display: 'block',
+              maxWidth: '42%',
+            }}
+          >
+            stay<br />cool.
+          </motion.span>
+
+          {/* keep moving. */}
+          <motion.span
+            initial={{ opacity: 0, x: 60 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              fontFamily: "'Montaga', serif",
+              fontSize: 'clamp(52px, 8vw, 130px)',
+              lineHeight: 0.9,
+              letterSpacing: '-0.04em',
+              color: C.light,
+              display: 'block',
+              textAlign: 'right',
+              maxWidth: '42%',
+            }}
+          >
+            keep<br />moving.
+          </motion.span>
+        </section>
+      );
+    }
+
+    /* ─── SIDE BARS ──────────────────────────────────────────── */
+    function SideBars() {
+      return (
+        <>
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: 'fixed',
+              left: 0, top: 0,
+              width: 25,
+              height: '100vh',
+              backgroundColor: C.purple,
+              zIndex: 50,
+              transformOrigin: 'top center',
+            }}
+          />
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: 1 }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: 'fixed',
+              right: 0, top: 0,
+              width: 25,
+              height: '100vh',
+              backgroundColor: C.purple,
+              zIndex: 50,
+              transformOrigin: 'top center',
+            }}
+          />
+        </>
+      );
+    }
+
+    /* ─── APP ────────────────────────────────────────────────── */
+    function App() {
+      const [ready, setReady] = React.useState(false);
+
+      return (
+        <div style={{ position: 'relative', backgroundColor: C.bg }}>
+          <AnimatePresence>
+            {!ready && <Preloader key="loader" onComplete={() => setReady(true)} />}
+          </AnimatePresence>
+          <SideBars />
+          <div style={{ marginLeft: 25, marginRight: 25 }}>
+            <Hero />
+            <Marquee />
+            <ProductsSection />
+            <StayCool />
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

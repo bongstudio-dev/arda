@@ -7,9 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,800&display=swap" rel="stylesheet"/>
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
@@ -91,7 +91,7 @@
   .size-btn.unavailable{opacity:.3;cursor:not-allowed;text-decoration:line-through}
 
   /* Modal */
-  .modal-bg{position:fixed;inset:0;background:rgba(13,13,13,.5);z-index:1000;backdrop-filter:blur(6px);animation:fadeIn .4s var(--ease-out-quart)}
+  .modal-bg{position:fixed;inset:0;background:rgba(13,13,13,.58);z-index:1000;backdrop-filter:blur(2px);animation:fadeIn .4s var(--ease-out-quart)}
   .modal-panel{position:fixed;right:24px;top:24px;bottom:24px;width:min(480px,calc(100vw - 48px));background:var(--white);z-index:1001;animation:slideIn .5s var(--ease-out-expo);border-radius:0;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.25)}
   .modal-scroll{height:100%;overflow-y:auto;padding:0}
   .modal-scroll::-webkit-scrollbar{width:8px}
@@ -211,6 +211,9 @@
 
 const { useState, useEffect, useRef } = React;
 
+const SmartImage = ({ loading = 'lazy', fetchPriority = 'auto', decoding = 'async', style, ...props }) =>
+<img loading={loading} fetchPriority={fetchPriority} decoding={decoding} style={style} {...props} />;
+
 const ArdaLogo = ({ color = '#0D0D0D', height = 32 }) =>
 <svg height={height} viewBox="0 0 737 275" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
     <path d="M519.103 0H469.813C467.079 0 464.861 2.21417 464.861 4.94165V85.5633C464.861 88.9267 463.072 91.8381 460.085 93.3474C457.076 94.872 453.505 94.5579 450.764 92.5506C436.622 82.1693 418.779 76.6837 399.163 76.6837C372.821 76.6837 350.402 86.023 334.332 103.69C318.217 121.411 309.702 146.158 309.702 175.256C309.702 204.354 318.217 229.384 334.332 247.151C350.386 264.849 372.798 274.204 399.155 274.204C418.541 274.204 436.392 268.657 450.787 258.161C453.528 256.161 457.091 255.87 460.093 257.387C463.079 258.896 464.861 261.808 464.861 265.164C464.861 267.891 467.079 270.105 469.813 270.105H519.103C521.837 270.105 524.056 267.891 524.056 265.164V4.94165C524.056 2.21417 521.837 0 519.103 0ZM416.691 230.756C389.888 230.756 371.876 208.446 371.876 175.241C371.876 142.036 389.888 120.101 416.691 120.101C443.494 120.101 461.874 142.258 461.874 175.241C461.874 208.223 443.716 230.756 416.691 230.756Z" fill={color} />
@@ -220,10 +223,10 @@ const ArdaLogo = ({ color = '#0D0D0D', height = 32 }) =>
 
 
 const PRODUCTS = [
-{ id: 1, name: 'Set Chocolate', tag: 'Más vendido', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$89.990', desc: 'Bra + Biker de alto impacto. Compresión premium con costuras en contraste. Del gym a la calle.', images: ['uploads/arda_lookbook_brown-set_studio-front.jpg', 'uploads/arda_lookbook_brown-set_studio-front-alt.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['XS'], color: 'Chocolate / Azul cielo', category: 'Set' },
-{ id: 2, name: 'Set Navy Racer', tag: 'Nueva colección', tagColor: '#1363C4', tagText: '#fff', price: '$94.990', desc: 'Bra con espalda racer y biker de cintura alta. Diseño bicolor con costuras en contraste crema.', images: ['uploads/arda_lookbook_navy-set_studio-front.jpg', 'uploads/arda_lookbook_navy-set_studio-back-detail.jpg'], sizes: ['XS', 'S', 'M', 'L', 'XL'], unavailable: [], color: 'Navy / Crema', category: 'Set' },
-{ id: 3, name: 'Tank Lima', tag: 'Edición limitada', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$49.990', desc: 'Tank crop con abertura en espalda. Tela ultra liviana. Color lima que define la temporada.', images: ['uploads/arda_lookbook_lime-tank_studio-back.jpg', 'uploads/arda_lookbook_lime-shorts_tennis-court.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['L'], color: 'Lima / Crema', category: 'Top' },
-{ id: 4, name: 'Windbreaker Navy', tag: '', tagColor: '', tagText: '', price: '$119.990', desc: 'Cortavientos oversized con detalle de cinta azul eléctrico. El layer perfecto para días de transición.', images: ['uploads/arda_lookbook_navy-set_windbreaker-front.jpg', 'uploads/arda_lookbook_navy-set_street-crossing.jpg'], sizes: ['S', 'M', 'L', 'XL'], unavailable: ['XL'], color: 'Beige / Navy', category: 'Outer' }];
+{ id: 1, name: 'Set Chocolate', tag: 'Más vendido', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$89.990', desc: 'Bra + Biker de alto impacto. Compresión premium con costuras en contraste. Del gym a la calle.', images: ['uploads/optimized/arda_lookbook_brown-set_studio-front.jpg', 'uploads/optimized/arda_lookbook_brown-set_studio-front-alt.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['XS'], color: 'Chocolate / Azul cielo', category: 'Set' },
+{ id: 2, name: 'Set Navy Racer', tag: 'Nueva colección', tagColor: '#1363C4', tagText: '#fff', price: '$94.990', desc: 'Bra con espalda racer y biker de cintura alta. Diseño bicolor con costuras en contraste crema.', images: ['uploads/optimized/arda_lookbook_navy-set_studio-front.jpg', 'uploads/optimized/arda_lookbook_navy-set_studio-back-detail.jpg'], sizes: ['XS', 'S', 'M', 'L', 'XL'], unavailable: [], color: 'Navy / Crema', category: 'Set' },
+{ id: 3, name: 'Tank Lima', tag: 'Edición limitada', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$49.990', desc: 'Tank crop con abertura en espalda. Tela ultra liviana. Color lima que define la temporada.', images: ['uploads/optimized/arda_lookbook_lime-tank_studio-back.jpg', 'uploads/optimized/arda_lookbook_lime-shorts_tennis-court.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['L'], color: 'Lima / Crema', category: 'Top' },
+{ id: 4, name: 'Windbreaker Navy', tag: '', tagColor: '', tagText: '', price: '$119.990', desc: 'Cortavientos oversized con detalle de cinta azul eléctrico. El layer perfecto para días de transición.', images: ['uploads/optimized/arda_lookbook_navy-set_windbreaker-front.jpg', 'uploads/optimized/arda_lookbook_navy-set_street-crossing.jpg'], sizes: ['S', 'M', 'L', 'XL'], unavailable: ['XL'], color: 'Beige / Navy', category: 'Outer' }];
 
 
 /* ── Ticker ── */
@@ -287,7 +290,7 @@ const Nav = ({ cartCount, scrolled, onCartOpen }) => {
 /* ── Hero variants ── */
 const HeroFullBleed = ({ onShop, imageY = 15 }) =>
 <section style={{ height: '100svh', position: 'relative', overflow: 'hidden', background: '#0D0D0D' }}>
-    <img src="uploads/arda_lookbook_navy-set_street-crossing.jpg" alt="hero"
+    <SmartImage src="uploads/optimized/arda_lookbook_navy-set_street-crossing.jpg" alt="hero" loading="eager" fetchPriority="high"
   style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: `50% ${imageY}%`, opacity: .88 }} />
     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(13,13,13,.08) 0%, rgba(13,13,13,.0) 40%, rgba(13,13,13,.72) 100%)' }} />
     <div style={{ position: 'absolute', bottom: 56, left: 36, right: 36 }}>
@@ -318,10 +321,10 @@ const HeroFullBleed = ({ onShop, imageY = 15 }) =>
 const HeroSplit = ({ onShop }) =>
 <section style={{ height: '100svh', display: 'grid', gridTemplateColumns: '55% 1fr', paddingTop: 68, overflow: 'hidden', background: '#fafaf8' }}>
     <div style={{ position: 'relative', overflow: 'hidden', borderRadius: 0 }}>
-      <img src="uploads/arda_lookbook_brown-set_studio-front.jpg" alt="hero"
+      <SmartImage src="uploads/optimized/arda_lookbook_brown-set_studio-front.jpg" alt="hero" loading="eager" fetchPriority="high"
     style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block', animation: 'heroZoom 9s ease-in-out infinite alternate' }} />
       <div style={{ position: 'absolute', top: 20, left: 20 }}>
-        <span className="tag-pill" style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,.22)', color: '#fff' }}>SS 2025</span>
+        <span className="tag-pill" style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(4px)', border: '1px solid rgba(255,255,255,.22)', color: '#fff' }}>SS 2025</span>
       </div>
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px', background: 'linear-gradient(to top, rgba(13,13,13,.7) 0%,transparent 100%)' }}>
         <span style={{ color: 'rgba(255,255,255,.6)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase' }}>Set Chocolate — Más vendido</span>
@@ -386,7 +389,7 @@ const HeroThreeCol = ({ onShop, animDuration = 1.4, delay1 = 0.25, delay2 = 0.08
     <section style={{ height: '100svh', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', paddingTop: 80, background: '#1363C4' }}>
       {/* Col 1 */}
       <div style={col(delay1)}>
-        <img src="uploads/arda_lookbook_lime-tank_studio-back.jpg" alt="Arda SS25"
+        <SmartImage src="uploads/optimized/arda_lookbook_lime-tank_studio-back.jpg" alt="Arda SS25" loading="eager" fetchPriority="high"
         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block',
           transition: 'transform 12s ease-in-out', transform: reveal ? 'scale(1.04)' : 'scale(1)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,13,13,.35) 0%, transparent 50%)' }} />
@@ -394,7 +397,7 @@ const HeroThreeCol = ({ onShop, animDuration = 1.4, delay1 = 0.25, delay2 = 0.08
 
       {/* Col 2 */}
       <div style={col(delay2, { borderLeft: '1px solid rgba(255,255,255,.08)', borderRight: '1px solid rgba(255,255,255,.08)' })}>
-        <img src="uploads/arda_lookbook_navy-set_studio-front.jpg" alt="Arda Navy"
+        <SmartImage src="uploads/optimized/arda_lookbook_navy-set_studio-front.jpg" alt="Arda Navy" loading="eager" fetchPriority="high"
         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block',
           transition: 'transform 12s ease-in-out', transform: reveal ? 'scale(1.04)' : 'scale(1)' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,13,13,.35) 0%, transparent 50%)' }} />
@@ -404,7 +407,7 @@ const HeroThreeCol = ({ onShop, animDuration = 1.4, delay1 = 0.25, delay2 = 0.08
       <div style={col(delay3, { display: 'flex', flexDirection: 'column' })}>
         {/* Photo — 60% */}
         <div style={{ height: '60%', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
-          <img src="uploads/arda_lookbook_navy-set_studio-back-detail.jpg" alt="Arda back detail"
+          <SmartImage src="uploads/optimized/arda_lookbook_navy-set_studio-back-detail.jpg" alt="Arda back detail" loading="eager" fetchPriority="high"
           style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block',
             transition: 'transform 12s ease-in-out', transform: reveal ? 'scale(1.04)' : 'scale(1)' }} />
         </div>
@@ -444,22 +447,30 @@ const StickyScroll = ({ onProduct, cardGap = 24 }) => {
   const containerRef = React.useRef();
 
   const cards = [
-  { product: PRODUCTS[0], img: 'uploads/arda_lookbook_brown-set_studio-front.jpg' },
-  { product: PRODUCTS[1], img: 'uploads/arda_lookbook_navy-set_street-crossing.jpg' },
-  { product: PRODUCTS[2], img: 'uploads/arda_lookbook_lime-shorts_tennis-court.jpg' }];
+  { product: PRODUCTS[0], img: 'uploads/optimized/arda_lookbook_brown-set_studio-front.jpg' },
+  { product: PRODUCTS[1], img: 'uploads/optimized/arda_lookbook_navy-set_street-crossing.jpg' },
+  { product: PRODUCTS[2], img: 'uploads/optimized/arda_lookbook_lime-shorts_tennis-court.jpg' }];
 
   const N = cards.length;
   const slot = 1 / N;
 
   React.useEffect(() => {
+    let ticking = false;
     const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
       const el = containerRef.current;
-      if (!el) return;
+      if (!el) {ticking = false;return;}
       const rect = el.getBoundingClientRect();
       const total = rect.height - window.innerHeight;
-      setProg(Math.max(0, Math.min(1, -rect.top / total)));
+      const nextProg = Math.max(0, Math.min(1, -rect.top / total));
+      setProg((prev) => Math.abs(prev - nextProg) > 0.002 ? nextProg : prev);
+      ticking = false;
+      });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
@@ -488,7 +499,7 @@ const StickyScroll = ({ onProduct, cardGap = 24 }) => {
         <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: 1300, margin: '0 auto' }}>
           {cards.map((card, i) =>
           <div key={i} style={cardStyle(i)} onClick={() => onProduct(card.product)}>
-              <img src={card.img} alt={card.product.name}
+              <SmartImage src={card.img} alt={card.product.name}
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,13,13,.72) 0%, rgba(13,13,13,.0) 55%)', pointerEvents: 'none' }} />
               <div style={{ position: 'absolute', bottom: 36, left: 36, right: 36, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
@@ -545,7 +556,7 @@ const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagge
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12,1fr)', gap: 14 }}>
         {/* Large — brown set */}
         <div className="product-card reveal" style={{ gridColumn: '1/8', height: '70vh', minHeight: 460 }} onClick={() => onProduct(PRODUCTS[0])}>
-          <img src="uploads/arda_lookbook_brown-set_studio-front.jpg" alt={PRODUCTS[0].name} />
+          <SmartImage src="uploads/optimized/arda_lookbook_brown-set_studio-front.jpg" alt={PRODUCTS[0].name} />
           <div className="overlay" />
           <div className="card-cta">
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
@@ -560,7 +571,7 @@ const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagge
         </div>
         {/* Navy front */}
         <div className="product-card reveal" style={{ gridColumn: '8/13', height: '70vh', minHeight: 460, transitionDelay: '.09s' }} onClick={() => onProduct(PRODUCTS[1])}>
-          <img src="uploads/arda_lookbook_navy-set_studio-front.jpg" alt={PRODUCTS[1].name} />
+          <SmartImage src="uploads/optimized/arda_lookbook_navy-set_studio-front.jpg" alt={PRODUCTS[1].name} />
           <div className="overlay" />
           <div className="card-cta">
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
@@ -575,7 +586,7 @@ const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagge
         </div>
         {/* Tank Lima */}
         <div className="product-card reveal" style={{ gridColumn: '1/5', height: '54vh', minHeight: 360, transitionDelay: '.16s' }} onClick={() => onProduct(PRODUCTS[2])}>
-          <img src="uploads/arda_lookbook_lime-tank_studio-back.jpg" alt={PRODUCTS[2].name} style={{ objectPosition: 'center top' }} />
+          <SmartImage src="uploads/optimized/arda_lookbook_lime-tank_studio-back.jpg" alt={PRODUCTS[2].name} style={{ objectPosition: 'center top' }} />
           <div className="overlay" />
           <div className="card-cta">
             <span className="tag-pill" style={{ background: '#E7E988', color: '#0D0D0D', marginBottom: 8, display: 'inline-block' }}>{PRODUCTS[2].tag}</span>
@@ -585,7 +596,7 @@ const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagge
         </div>
         {/* Back detail */}
         <div className="product-card reveal" style={{ gridColumn: '5/9', height: '54vh', minHeight: 360, transitionDelay: '.22s' }} onClick={() => onProduct(PRODUCTS[1])}>
-          <img src="uploads/arda_lookbook_navy-set_studio-back-detail.jpg" alt="Navy detail" />
+          <SmartImage src="uploads/optimized/arda_lookbook_navy-set_studio-back-detail.jpg" alt="Navy detail" />
           <div className="overlay" />
           <div className="card-cta" style={{ bottom: 14, left: 14 }}>
             <span style={{ color: 'rgba(255,255,255,.75)', fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }}>Detalle espalda racer</span>
@@ -593,7 +604,7 @@ const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagge
         </div>
         {/* Windbreaker */}
         <div className="product-card reveal" style={{ gridColumn: '9/13', height: '54vh', minHeight: 360, transitionDelay: '.28s' }} onClick={() => onProduct(PRODUCTS[3])}>
-          <img src="uploads/arda_lookbook_navy-set_windbreaker-front.jpg" alt={PRODUCTS[3].name} />
+          <SmartImage src="uploads/optimized/arda_lookbook_navy-set_windbreaker-front.jpg" alt={PRODUCTS[3].name} />
           <div className="overlay" />
           <div className="card-cta">
             <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>{PRODUCTS[3].name}</div>
@@ -612,7 +623,7 @@ const HotspotImage = ({ src, pins, onProduct }) => {
   const [active, setActive] = useState(null);
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <img src={src} alt="lookbook" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      <SmartImage src={src} alt="lookbook" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       {pins.map((pin, i) =>
       <div key={i} className="hotspot-pin" style={{ top: pin.y, left: pin.x, transform: 'translate(-50%,-50%)' }}
       onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}
@@ -635,7 +646,7 @@ const LifestyleBand = ({ onProduct }) =>
 <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '80vh', overflow: 'hidden' }}>
     {/* Left — tennis court */}
     <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }} onClick={() => onProduct(PRODUCTS[2])}>
-      <img src="uploads/arda_lookbook_lime-shorts_tennis-court.jpg" alt="Tennis"
+      <SmartImage src="uploads/optimized/arda_lookbook_lime-shorts_tennis-court.jpg" alt="Tennis"
     style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform .75s cubic-bezier(.25,.46,.45,.94)' }}
     onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.04)'}
     onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} />
@@ -648,7 +659,7 @@ const LifestyleBand = ({ onProduct }) =>
     {/* Right — street crossing with hotspots */}
     <div style={{ position: 'relative', overflow: 'hidden' }}>
       <HotspotImage
-      src="uploads/arda_lookbook_navy-set_street-crossing.jpg"
+      src="uploads/optimized/arda_lookbook_navy-set_street-crossing.jpg"
       onProduct={onProduct}
       pins={[
       { x: '38%', y: '42%', product: PRODUCTS[1] },
@@ -671,7 +682,7 @@ const EditorialFeature = ({ onProduct }) => {
   return (
     <section style={{ display: 'grid', gridTemplateColumns: '55% 1fr', minHeight: '88vh', overflow: 'hidden', background: '#F5F5F3' }}>
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <img src="uploads/arda_lookbook_brown-set_studio-front-alt.jpg" alt="Brown set alt"
+        <SmartImage src="uploads/optimized/arda_lookbook_brown-set_studio-front-alt.jpg" alt="Brown set alt"
         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', position: 'relative' }}>
@@ -721,7 +732,7 @@ const ProductModal = ({ product, onClose, onAddCart }) => {
           onMouseEnter={(e) => {const a = e.currentTarget.querySelectorAll('.carousel-arrow');a[0].style.opacity = '1';a[1].style.opacity = '1';}}
           onMouseLeave={(e) => {const a = e.currentTarget.querySelectorAll('.carousel-arrow');a[0].style.opacity = '0';a[1].style.opacity = '0';}}>
             <div key={imgKey} style={{ width: '100%', height: '100%', animation: direction >= 0 ? 'imgSlideInRight .45s var(--ease-out-expo)' : 'imgSlideInLeft .45s var(--ease-out-expo)' }}>
-              <img src={product.images[img]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+              <SmartImage src={product.images[img]} alt={product.name} loading="eager" fetchPriority="high" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
             </div>
             <style>{`@keyframes imgSlideInRight{from{transform:translateX(100%)}to{transform:translateX(0)}}@keyframes imgSlideInLeft{from{transform:translateX(-100%)}to{transform:translateX(0)}}`}</style>
             {product.images.length > 1 &&

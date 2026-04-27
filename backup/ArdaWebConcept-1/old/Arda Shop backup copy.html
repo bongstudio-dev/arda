@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Arda — Stay cool. Keep moving.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,800&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --blue:#1363C4;--yellow:#E7E988;--black:#0D0D0D;--white:#FFFFFF;--gray:#6b6b6b;--light:#F5F5F3;
+    --r-sm:10px;--r-md:16px;--r-lg:24px;--r-pill:100px;
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Rethink Sans',sans-serif;background:var(--white);color:var(--black);overflow-x:hidden}
+
+  /* Ticker */
+  .ticker-wrap{overflow:hidden;white-space:nowrap}
+  .ticker-inner{display:inline-flex;animation:ticker 24s linear infinite}
+  @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* Easing presets — framerotion-inspired */
+  :root{
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+    --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Nav link */
+  .nav-link{position:relative;text-decoration:none;color:inherit;font-weight:600;font-size:13px;letter-spacing:0.06em;text-transform:uppercase}
+  .nav-link::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:2px;background:var(--blue);border-radius:2px;transition:width .5s var(--ease-out-expo)}
+  .nav-link:hover::after{width:100%}
+
+  /* Buttons */
+  .btn-primary{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--blue);color:#fff;
+    font-family:'Rethink Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:.07em;text-transform:uppercase;
+    padding:13px 24px 13px 28px;border:none;cursor:pointer;border-radius:8px;
+    transition:background .4s var(--ease-out-quart);
+  }
+  .btn-primary:hover{background:#0f4fa0}
+  .btn-primary .arrow{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:rgba(255,255,255,.18);border-radius:50%;transition:transform .5s var(--ease-out-expo)}
+  .btn-primary:hover .arrow{transform:translateX(4px)}
+
+  .btn-outline{
+    display:inline-flex;align-items:center;gap:8px;
+    background:transparent;color:var(--black);
+    font-family:'Rethink Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:.07em;text-transform:uppercase;
+    padding:12px 24px;border:1.5px solid currentColor;cursor:pointer;border-radius:8px;
+    transition:all .45s var(--ease-out-quart);position:relative;overflow:hidden;
+  }
+  .btn-outline::before{content:'';position:absolute;inset:0;background:var(--black);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease-out-expo);border-radius:8px}
+  .btn-outline:hover{color:#fff;border-color:var(--black)}
+  .btn-outline:hover::before{transform:scaleX(1)}
+  .btn-outline span{position:relative;z-index:1}
+
+  .btn-white{
+    display:inline-flex;align-items:center;gap:10px;
+    background:#fff;color:var(--black);
+    font-family:'Rethink Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:.07em;text-transform:uppercase;
+    padding:13px 24px 13px 28px;border:none;cursor:pointer;border-radius:8px;
+    transition:all .4s var(--ease-out-quart);
+  }
+  .btn-white:hover{background:var(--yellow)}
+  .btn-white:active{transform:translateY(0)}
+
+  /* Product cards */
+  .product-card{cursor:pointer;overflow:hidden;position:relative;border-radius:14px}
+  .product-card img{transition:transform .8s var(--ease-out-expo);display:block;width:100%;height:100%;object-fit:cover}
+  .product-card:hover img{transform:scale(1.06)}
+  .product-card .overlay{position:absolute;inset:0;background:linear-gradient(to top, rgba(13,13,13,.6) 0%, transparent 55%);opacity:0;transition:opacity .5s var(--ease-out-quart);border-radius:14px}
+  .product-card:hover .overlay{opacity:1}
+  .product-card .card-cta{position:absolute;bottom:20px;left:20px;right:20px;transform:translateY(12px);opacity:0;transition:all .5s var(--ease-out-expo)}
+  .product-card:hover .card-cta{transform:translateY(0);opacity:1}
+
+  /* Pill tag */
+  .tag-pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:6px}
+
+  /* Size buttons */
+  .size-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1.5px solid #d4d4d4;border-radius:8px;font-family:'Rethink Sans',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all .2s;background:#fff}
+  .size-btn:hover,.size-btn.active{border-color:var(--black);background:var(--black);color:#fff}
+  .size-btn.unavailable{opacity:.3;cursor:not-allowed;text-decoration:line-through}
+
+  /* Modal */
+  .modal-bg{position:fixed;inset:0;background:rgba(13,13,13,.5);z-index:1000;backdrop-filter:blur(6px);animation:fadeIn .4s var(--ease-out-quart)}
+  .modal-panel{position:fixed;right:24px;top:24px;bottom:24px;width:min(480px,calc(100vw - 48px));background:var(--white);z-index:1001;animation:slideIn .5s var(--ease-out-expo);border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.25)}
+  .modal-scroll{height:100%;overflow-y:auto;padding:0}
+  .modal-scroll::-webkit-scrollbar{width:8px}
+  .modal-scroll::-webkit-scrollbar-track{background:transparent}
+  .modal-scroll::-webkit-scrollbar-thumb{background:#d8d8d8;border-radius:4px}
+  .modal-scroll::-webkit-scrollbar-thumb:hover{background:#bbb}
+  .carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:#fff;border:none;cursor:pointer;z-index:5;box-shadow:0 4px 12px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;transition:transform .3s var(--ease-out-quart)}
+  .carousel-arrow:hover{transform:translateY(-50%) scale(1.1)}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+
+  /* Reveal — scale + fade, not just translateY */
+  .reveal{opacity:0;transform:scale(.96) translateY(24px);transition:opacity .7s var(--ease-out-expo), transform .7s var(--ease-out-expo)}
+  .reveal.visible{opacity:1;transform:scale(1) translateY(0)}
+
+  /* Hotspot pins */
+  .hotspot-pin{position:absolute;cursor:pointer;z-index:10}
+  .hotspot-dot{width:14px;height:14px;background:#fff;border-radius:50%;border:2px solid rgba(255,255,255,.5);position:relative;transition:transform .4s var(--ease-spring)}
+  .hotspot-dot::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);animation:pinPulse 2.4s ease-out infinite}
+  .hotspot-pin:hover .hotspot-dot{transform:scale(1.35)}
+  @keyframes pinPulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(2.2);opacity:0}}
+  .hotspot-card{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);background:#fff;border-radius:8px;padding:10px 14px;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.18);pointer-events:none;animation:cardPop .3s var(--ease-spring)}
+  @keyframes cardPop{from{opacity:0;transform:translateX(-50%) scale(.92) translateY(6px)}to{opacity:1;transform:translateX(-50%) scale(1) translateY(0)}}
+
+
+
+  /* Tweaks */
+  .tweaks-panel{position:fixed;bottom:24px;right:24px;background:#fff;border:1.5px solid #e8e8e8;padding:20px;width:260px;z-index:900;box-shadow:0 8px 32px rgba(0,0,0,.1);border-radius:8px;display:block}
+  .tweaks-panel.open{display:block}
+  .tweak-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-bottom:6px;display:block}
+  .tweak-row{margin-bottom:14px}
+  select.tweak-select{width:100%;padding:8px 10px;font-family:'Rethink Sans',sans-serif;font-size:13px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;outline:none;border-radius:6px}
+
+  /* Tweak toggle button */
+  .tweak-toggle{position:fixed;bottom:24px;right:24px;width:48px;height:48px;background:#1363C4;border:none;border-radius:50%;cursor:pointer;z-index:901;box-shadow:0 4px 16px rgba(19,99,196,.35);display:flex;align-items:center;justify-content:center;transition:transform .3s var(--ease-out-quart)}
+  .tweak-toggle:hover{transform:scale(1.08)}
+  .tweak-toggle svg{width:22px;height:22px;stroke:#fff;stroke-width:2.5;fill:none}
+  
+  /* Range input */
+  input[type=range]{-webkit-appearance:none;width:100%;height:6px;background:#e8e8e8;border-radius:3px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:#1363C4;border-radius:50%;cursor:pointer;transition:transform .2s}
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+
+  @media(max-width:768px){.hide-mobile{display:none!important}.modal-panel{width:calc(100vw - 32px);right:16px;top:16px;bottom:16px;border-radius:16px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+
+const { useState, useEffect, useRef } = React;
+
+const ArdaLogo = ({ color = '#0D0D0D', height = 32 }) =>
+<svg height={height} viewBox="0 0 737 275" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }}>
+    <path d="M519.103 0H469.813C467.079 0 464.861 2.21417 464.861 4.94165V85.5633C464.861 88.9267 463.072 91.8381 460.085 93.3474C457.076 94.872 453.505 94.5579 450.764 92.5506C436.622 82.1693 418.779 76.6837 399.163 76.6837C372.821 76.6837 350.402 86.023 334.332 103.69C318.217 121.411 309.702 146.158 309.702 175.256C309.702 204.354 318.217 229.384 334.332 247.151C350.386 264.849 372.798 274.204 399.155 274.204C418.541 274.204 436.392 268.657 450.787 258.161C453.528 256.161 457.091 255.87 460.093 257.387C463.079 258.896 464.861 261.808 464.861 265.164C464.861 267.891 467.079 270.105 469.813 270.105H519.103C521.837 270.105 524.056 267.891 524.056 265.164V4.94165C524.056 2.21417 521.837 0 519.103 0ZM416.691 230.756C389.888 230.756 371.876 208.446 371.876 175.241C371.876 142.036 389.888 120.101 416.691 120.101C443.494 120.101 461.874 142.258 461.874 175.241C461.874 208.223 443.716 230.756 416.691 230.756Z" fill={color} />
+    <path d="M736.128 263.25C733.027 255.902 731.522 246.839 731.522 235.538V141.379C731.522 121.965 722.908 105.676 706.608 94.2836C690.124 82.7608 666.515 76.6699 638.338 76.6699C584.018 76.6699 550.72 99.1717 546.989 138.406C546.851 139.839 547.327 141.264 548.286 142.321C549.231 143.355 550.52 143.922 551.918 143.922H604.218C606.721 143.922 608.871 142.045 609.117 139.647C611.028 121.244 622.115 111.913 642.062 111.913C668.657 111.913 672.327 129.289 672.327 148.067V150.304C672.327 163.382 652.204 165.834 626.721 168.937C588.379 173.603 540.662 179.41 540.662 222.881C540.662 254.048 566.26 274.19 605.877 274.19C633.846 274.19 655.743 264.047 669.202 244.862L672.695 239.882V247.368C673.31 254.47 677.21 263.732 681.594 268.49C682.531 269.509 683.874 270.091 685.264 270.091H731.576C733.265 270.091 734.762 269.287 735.691 267.893C736.62 266.491 736.781 264.797 736.128 263.234V263.25ZM672.327 195.346C672.327 222.33 655.282 241.177 630.875 241.177C614.115 241.177 602.844 231.73 602.844 217.672C602.844 198.549 623.796 193.707 644.05 189.025C649.693 187.723 655.536 186.375 660.972 184.735C663.674 183.915 666.523 184.413 668.78 186.083C671.029 187.746 672.319 190.313 672.319 193.109V195.339L672.327 195.346Z" fill={color} />
+    <path d="M300.804 76.6776C299.046 76.7006 280.78 77.1756 268.734 78.1562C252.588 79.4817 241.893 84.2395 230.584 95.1494C220.288 105.079 212.518 123.719 208.119 149.048L194.514 227.815C193.716 229.723 190.867 229.156 190.867 227.088V141.379C190.859 121.965 182.245 105.676 165.945 94.2836C149.461 82.7608 125.86 76.6699 97.6755 76.6699C43.3482 76.6699 10.0501 99.1717 6.31873 138.406C6.10376 140.689 7.42432 142.949 9.79672 143.715C10.2804 143.869 10.7871 143.922 11.2939 143.922H63.5558C66.0588 143.922 68.2085 142.045 68.4542 139.647C70.366 121.244 81.4525 111.913 101.399 111.913C127.995 111.913 131.665 129.289 131.665 148.067V150.304C131.665 163.382 111.541 165.834 86.0591 168.937C47.7168 173.611 0 179.418 0 222.889C0 254.056 25.5974 274.198 65.2142 274.198C93.184 274.198 115.081 264.054 128.54 244.87L132.033 239.89V247.375C132.647 254.485 136.548 263.748 140.932 268.498C141.868 269.517 143.212 270.099 144.601 270.099L245.317 270.068C246.822 270.068 248.104 268.996 248.373 267.525L267.421 163.551C267.659 162.203 267.951 160.793 268.35 159.123L268.373 159.031C272.274 145.784 281.878 138.904 296.927 138.575C299.337 138.521 301.387 136.529 301.595 134.047L305.84 82.0253C305.956 80.6309 305.487 79.3055 304.535 78.2788C303.576 77.2522 302.217 76.6699 300.796 76.6699L300.804 76.6776ZM131.657 195.346C131.657 222.33 114.612 241.177 90.2051 241.177C73.4447 241.177 62.1739 231.73 62.1739 217.672C62.1739 198.549 83.1263 193.707 103.38 189.025C109.023 187.723 114.866 186.375 120.302 184.735C123.25 183.846 126.375 184.513 128.716 186.566C130.651 188.267 131.657 190.795 131.657 193.369V195.346Z" fill={color} />
+  </svg>;
+
+
+const PRODUCTS = [
+{ id: 1, name: 'Set Chocolate', tag: 'Más vendido', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$89.990', desc: 'Bra + Biker de alto impacto. Compresión premium con costuras en contraste. Del gym a la calle.', images: ['uploads/arda_lookbook_brown-set_studio-front.jpg', 'uploads/arda_lookbook_brown-set_studio-front-alt.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['XS'], color: 'Chocolate / Azul cielo', category: 'Set' },
+{ id: 2, name: 'Set Navy Racer', tag: 'Nueva colección', tagColor: '#1363C4', tagText: '#fff', price: '$94.990', desc: 'Bra con espalda racer y biker de cintura alta. Diseño bicolor con costuras en contraste crema.', images: ['uploads/arda_lookbook_navy-set_studio-front.jpg', 'uploads/arda_lookbook_navy-set_studio-back-detail.jpg'], sizes: ['XS', 'S', 'M', 'L', 'XL'], unavailable: [], color: 'Navy / Crema', category: 'Set' },
+{ id: 3, name: 'Tank Lima', tag: 'Edición limitada', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$49.990', desc: 'Tank crop con abertura en espalda. Tela ultra liviana. Color lima que define la temporada.', images: ['uploads/arda_lookbook_lime-tank_studio-back.jpg', 'uploads/arda_lookbook_lime-shorts_tennis-court.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['L'], color: 'Lima / Crema', category: 'Top' },
+{ id: 4, name: 'Windbreaker Navy', tag: '', tagColor: '', tagText: '', price: '$119.990', desc: 'Cortavientos oversized con detalle de cinta azul eléctrico. El layer perfecto para días de transición.', images: ['uploads/arda_lookbook_navy-set_windbreaker-front.jpg', 'uploads/arda_lookbook_navy-set_street-crossing.jpg'], sizes: ['S', 'M', 'L', 'XL'], unavailable: ['XL'], color: 'Beige / Navy', category: 'Outer' }];
+
+
+/* ── Ticker ── */
+const Ticker = ({ bg, textColor, items, speed = 24 }) => {
+  const r = [...items, ...items, ...items, ...items];
+  return (
+    <div className="ticker-wrap" style={{ background: bg, padding: '12px 0', borderTop: '1px solid rgba(255,255,255,.08)', borderBottom: '1px solid rgba(255,255,255,.08)' }}>
+      <div className="ticker-inner" style={{ animationDuration: `${speed}s` }}>
+        {r.map((it, i) =>
+        <span key={i} style={{ color: textColor, fontSize: 12, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', paddingRight: 44, display: 'inline-flex', alignItems: 'center', gap: 16 }}>
+            {it}<span style={{ opacity: .35, fontSize: 8 }}>◆</span>
+          </span>
+        )}
+      </div>
+    </div>);
+
+};
+
+/* ── Nav ── */
+const Nav = ({ cartCount, scrolled, onCartOpen }) => {
+  const light = !scrolled;
+  return (
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500, background: scrolled ? 'rgba(255,255,255,.95)' : 'transparent', borderBottom: scrolled ? '1px solid #ebebeb' : '1px solid transparent', transition: 'all .35s', backdropFilter: scrolled ? 'blur(14px)' : 'none' }}>
+      <div style={{ maxWidth: 1440, margin: '0 auto', padding: '0 32px', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <ArdaLogo color={light ? '#fff' : '#0D0D0D'} height={24} />
+        <div className="hide-mobile" style={{ display: 'flex', gap: 32 }}>
+          {['Colección', 'Sets', 'Tops', 'Outers', 'Lookbook'].map((l) =>
+          <a key={l} href="#" className="nav-link" style={{ color: light ? '#fff' : '#0D0D0D' }}>{l}</a>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <button className="hide-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke={light ? '#fff' : '#0D0D0D'} strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
+          </button>
+          <button onClick={onCartOpen} style={{ background: 'none', border: 'none', cursor: 'pointer', position: 'relative', padding: 4 }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={light ? '#fff' : '#0D0D0D'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" />
+            </svg>
+            {cartCount > 0 && <span style={{ position: 'absolute', top: -2, right: -2, background: '#1363C4', color: '#fff', borderRadius: '50%', width: 16, height: 16, fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{cartCount}</span>}
+          </button>
+        </div>
+      </div>
+    </nav>);
+
+};
+
+/* ── Hero variants ── */
+const HeroFullBleed = ({ onShop, imageY = 15 }) =>
+<section style={{ height: '100svh', position: 'relative', overflow: 'hidden', background: '#0D0D0D' }}>
+    <img src="uploads/arda_lookbook_navy-set_street-crossing.jpg" alt="hero"
+  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: `50% ${imageY}%`, opacity: .88 }} />
+    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, rgba(13,13,13,.08) 0%, rgba(13,13,13,.0) 40%, rgba(13,13,13,.72) 100%)' }} />
+    <div style={{ position: 'absolute', bottom: 56, left: 36, right: 36 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 32, flexWrap: 'wrap' }}>
+        <div>
+          <h1 style={{ color: '#fff', fontSize: 'clamp(52px,8.5vw,122px)', fontWeight: 800, lineHeight: .92, letterSpacing: '-.025em', textWrap: 'balance' }}>
+            Stay cool.<br />Keep moving.
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 16, fontWeight: 500, marginTop: 18, maxWidth: 380, lineHeight: 1.6 }}>Activewear femenino de alto impacto. Hecho para moverse y para todo lo que viene después.
+
+        </p>
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexShrink: 0 }}>
+<button className="btn-white" onClick={onShop}>Ver colección</button>
+          <button className="btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.45)' }} onClick={onShop}><span>Lookbook</span></button>
+        </div>
+      </div>
+    </div>
+    <div style={{ position: 'absolute', right: 32, top: '50%', transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+      <div style={{ width: 1, height: 56, background: 'rgba(255,255,255,.25)', position: 'relative', overflow: 'hidden', borderRadius: 1 }}>
+        <div style={{ position: 'absolute', top: 0, width: '100%', background: '#fff', height: '40%', borderRadius: 1, animation: 'sdot 2.2s ease-in-out infinite' }} />
+      </div>
+    </div>
+    <style>{`@keyframes sdot{0%{transform:translateY(-100%)}100%{transform:translateY(350%)}}`}</style>
+  </section>;
+
+
+const HeroSplit = ({ onShop }) =>
+<section style={{ height: '100svh', display: 'grid', gridTemplateColumns: '55% 1fr', paddingTop: 68, overflow: 'hidden', background: '#fafaf8' }}>
+    <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '0 0 var(--r-lg) 0' }}>
+      <img src="uploads/arda_lookbook_brown-set_studio-front.jpg" alt="hero"
+    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block', animation: 'heroZoom 9s ease-in-out infinite alternate' }} />
+      <div style={{ position: 'absolute', top: 20, left: 20 }}>
+        <span className="tag-pill" style={{ background: 'rgba(255,255,255,.18)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,.22)', color: '#fff' }}>SS 2025</span>
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '24px', background: 'linear-gradient(to top, rgba(13,13,13,.7) 0%,transparent 100%)' }}>
+        <span style={{ color: 'rgba(255,255,255,.6)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase' }}>Set Chocolate — Más vendido</span>
+      </div>
+    </div>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '56px 48px', position: 'relative', background: '#fff' }}>
+      <div style={{ width: 2, height: 40, background: '#1363C4', borderRadius: 2, marginBottom: 28 }} />
+      <span style={{ color: '#a0a0a0', fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 16 }}>Nueva colección</span>
+      <h1 style={{ fontSize: 'clamp(40px,4vw,64px)', fontWeight: 800, lineHeight: .92, letterSpacing: '-.025em', marginBottom: 24, color: '#0D0D0D' }}>
+        Stay cool.<br />Keep<br />moving.
+      </h1>
+      <p style={{ color: '#5a5a5a', fontSize: 15, lineHeight: 1.75, marginBottom: 36, fontWeight: 500, maxWidth: 280 }}>
+        Activewear femenino de alto impacto. Hecho para moverse — y para todo lo que viene después.
+      </p>
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        <button className="btn-primary" onClick={onShop}>Ver colección</button>
+        <button className="btn-outline" onClick={onShop}><span>Lookbook</span></button>
+      </div>
+      <div style={{ display: 'flex', gap: 28, marginTop: 44, paddingTop: 28, borderTop: '1px solid #f0f0f0' }}>
+        {[['4', 'Colecciones'], ['100%', 'Chilena'], ['SS25', 'Temporada']].map(([v, l]) =>
+      <div key={l}><div style={{ fontSize: 20, fontWeight: 800, color: '#1363C4', letterSpacing: '-.02em' }}>{v}</div><div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#c0c0c0', marginTop: 2 }}>{l}</div></div>
+      )}
+      </div>
+      <div style={{ position: 'absolute', bottom: 0, right: 0, width: 100, height: 4, background: '#E7E988', borderRadius: '2px 0 0 0' }} />
+    </div>
+    <style>{`@keyframes heroZoom{0%{transform:scale(1)}100%{transform:scale(1.05)}}`}</style>
+  </section>;
+
+
+const HeroAurora = ({ onShop }) =>
+<section style={{ height: '100svh', position: 'relative', overflow: 'hidden', background: '#1866DB', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    {[['70%', '90%', '-20%', '-10%', 'rgba(194,137,181,0.75)', 'blur(90px)', 'blobMove1 12s ease-in-out infinite alternate'], ['65%', '70%', '-10%', null, 'rgba(98,126,196,0.6)', 'blur(100px)', 'blobMove2 15s ease-in-out infinite alternate'], ['75%', '75%', null, '-10%', 'rgba(181,135,179,0.7)', 'blur(85px)', 'blobMove3 10s ease-in-out infinite alternate']].map(([w, h, t, r, bg, f, anim], i) =>
+  <div key={i} style={{ position: 'absolute', width: w, height: h, top: t || undefined, bottom: t ? undefined : '-20%', left: r ? undefined : '-10%', right: r || undefined, borderRadius: '50%', background: bg, filter: f, animation: anim }} />
+  )}
+    <div style={{ position: 'absolute', right: -80, bottom: -60, opacity: .07, pointerEvents: 'none' }}><ArdaLogo color='#fff' height={320} /></div>
+    <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '0 36px' }}>
+      <span style={{ color: 'rgba(255,255,255,.55)', fontSize: 12, fontWeight: 700, letterSpacing: '.2em', textTransform: 'uppercase', display: 'block', marginBottom: 20 }}>Arda — SS 2025</span>
+      <h1 style={{ color: '#fff', fontSize: 'clamp(60px,9.5vw,130px)', fontWeight: 800, lineHeight: .9, letterSpacing: '-.025em', marginBottom: 32 }}>
+        Stay cool.<br />Keep moving.
+      </h1>
+      <p style={{ color: 'rgba(255,255,255,.7)', fontSize: 17, fontWeight: 500, lineHeight: 1.65, maxWidth: 460, margin: '0 auto 44px' }}>Activewear femenino de alto impacto. Hecho en Chile.</p>
+      <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+        <button className="btn-white" onClick={onShop}>Ver colección</button>
+        <button className="btn-outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.38)' }} onClick={onShop}><span>Lookbook</span></button>
+      </div>
+    </div>
+  </section>;
+
+
+const Hero = ({ onShop, layout, imageY = 15 }) => {
+  if (layout === 'split') return <HeroSplit onShop={onShop} />;
+  if (layout === 'aurora') return <HeroAurora onShop={onShop} />;
+  return <HeroFullBleed onShop={onShop} imageY={imageY} />;
+};
+
+/* ── Sticky Cards Stack ── */
+const StickyScroll = ({ onProduct, cardGap = 24 }) => {
+  const [prog, setProg] = React.useState(0);
+  const containerRef = React.useRef();
+
+  const cards = [
+  { product: PRODUCTS[0], img: 'uploads/arda_lookbook_brown-set_studio-front.jpg' },
+  { product: PRODUCTS[1], img: 'uploads/arda_lookbook_navy-set_street-crossing.jpg' },
+  { product: PRODUCTS[2], img: 'uploads/arda_lookbook_lime-shorts_tennis-court.jpg' }];
+
+  const N = cards.length;
+  const slot = 1 / N;
+
+  React.useEffect(() => {
+    const onScroll = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      setProg(Math.max(0, Math.min(1, -rect.top / total)));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const cardStyle = (i) => {
+    const bury = i < N - 1 ? Math.max(0, Math.min(1, (prog - i * slot) / slot)) : 0;
+    const slideIn = i === 0 ? 1 : Math.max(0, Math.min(1, (prog - (i - 1) * slot) / slot));
+    const translateY = i === 0 ? 0 : `${(1 - slideIn) * (108 + cardGap * 0.3)}%`;
+    const scale = 1 - bury * 0.08;
+    const pushUp = bury * (4.2 + cardGap * 0.08);
+    return {
+      position: 'absolute', inset: 0,
+      borderRadius: 20, overflow: 'hidden', cursor: 'pointer',
+      zIndex: i + 1,
+      transformOrigin: 'top center',
+      transform: i === 0 ?
+      `scale(${scale}) translateY(-${pushUp}%)` :
+      `translateY(${translateY}) scale(${scale}) translateY(-${pushUp}%)`,
+      willChange: 'transform'
+    };
+  };
+
+  return (
+    <div ref={containerRef} id="coleccion" style={{ height: `${N * 100 + 85 + cardGap * 0.5}vh`, position: 'relative' }}>
+      <div style={{ position: 'sticky', top: 0, height: '100vh', padding: '80px 32px 48px', background: '#0D0D0D', overflow: 'hidden' }}>
+        <span style={{ position: 'absolute', top: 20, left: 40, fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,.35)', zIndex: 20 }}>
+          Colección SS 2025 — {Math.min(Math.ceil(prog * N + 0.01), N)} / {N}
+        </span>
+        <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: 1300, margin: '0 auto' }}>
+          {cards.map((card, i) =>
+          <div key={i} style={cardStyle(i)} onClick={() => onProduct(card.product)}>
+              <img src={card.img} alt={card.product.name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top', display: 'block' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(13,13,13,.72) 0%, rgba(13,13,13,.0) 55%)', pointerEvents: 'none' }} />
+              <div style={{ position: 'absolute', bottom: 36, left: 36, right: 36, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+                <div>
+                  {card.product.tag && <span className="tag-pill" style={{ background: card.product.tagColor, color: card.product.tagText, marginBottom: 10, display: 'inline-block' }}>{card.product.tag}</span>}
+                  <div style={{ color: '#fff', fontWeight: 800, fontSize: 'clamp(24px,3vw,42px)', letterSpacing: '-.02em', lineHeight: 1 }}>{card.product.name}</div>
+                  <div style={{ color: 'rgba(255,255,255,.65)', fontSize: 16, fontWeight: 600, marginTop: 8 }}>{card.product.price}</div>
+                </div>
+                <button className="btn-white" style={{ flexShrink: 0 }} onClick={(e) => {e.stopPropagation();onProduct(card.product);}}>
+                  Ver
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>);
+
+};
+
+/* ── Product Grid ── */
+const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagger = 80 }) => {
+  const ref = useRef();
+  useEffect(() => {
+    const els = ref.current?.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {if (e.isIntersecting) {setTimeout(() => e.target.classList.add('visible'), revealDelay + i * stagger);}});
+    }, { threshold: .1, rootMargin: '0px 0px -40px 0px' });
+    els?.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, [revealDelay, stagger]);
+
+  useEffect(() => {
+    const style = document.getElementById('reveal-styles');
+    if (!style) {
+      const s = document.createElement('style');
+      s.id = 'reveal-styles';
+      s.textContent = `.reveal{opacity:0;transform:scale(.96) translateY(24px);transition:opacity ${revealDuration}ms var(--ease-out-expo), transform ${revealDuration}ms var(--ease-out-expo)}.reveal.visible{opacity:1;transform:scale(1) translateY(0)}`;
+      document.head.appendChild(s);
+    } else {
+      style.textContent = `.reveal{opacity:0;transform:scale(.96) translateY(24px);transition:opacity ${revealDuration}ms var(--ease-out-expo), transform ${revealDuration}ms var(--ease-out-expo)}.reveal.visible{opacity:1;transform:scale(1) translateY(0)}`;
+    }
+  }, [revealDuration]);
+
+  return (
+    <section ref={ref} style={{ padding: '96px 32px', maxWidth: 1440, margin: '0 auto' }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 48 }}>
+        <div>
+          <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#aaa' }}>Colección SS 2025</span>
+          <h2 style={{ fontSize: 'clamp(28px,3.5vw,48px)', fontWeight: 800, letterSpacing: '-.025em', marginTop: 6 }}>Lo más nuevo.</h2>
+        </div>
+        <a href="#" style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#1363C4', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>Ver todo <span>→</span></a>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12,1fr)', gap: 14 }}>
+        {/* Large — brown set */}
+        <div className="product-card reveal" style={{ gridColumn: '1/8', height: '70vh', minHeight: 460 }} onClick={() => onProduct(PRODUCTS[0])}>
+          <img src="uploads/arda_lookbook_brown-set_studio-front.jpg" alt={PRODUCTS[0].name} />
+          <div className="overlay" />
+          <div className="card-cta">
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+              <div>
+                <span className="tag-pill" style={{ background: '#E7E988', color: '#0D0D0D', marginBottom: 8, display: 'inline-block' }}>{PRODUCTS[0].tag}</span>
+                <div style={{ color: '#fff', fontWeight: 800, fontSize: 20, lineHeight: 1.1 }}>{PRODUCTS[0].name}</div>
+                <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 14, fontWeight: 600, marginTop: 3 }}>{PRODUCTS[0].price}</div>
+              </div>
+              <button className="btn-white" onClick={(e) => {e.stopPropagation();onProduct(PRODUCTS[0]);}}>Ver</button>
+            </div>
+          </div>
+        </div>
+        {/* Navy front */}
+        <div className="product-card reveal" style={{ gridColumn: '8/13', height: '70vh', minHeight: 460, transitionDelay: '.09s' }} onClick={() => onProduct(PRODUCTS[1])}>
+          <img src="uploads/arda_lookbook_navy-set_studio-front.jpg" alt={PRODUCTS[1].name} />
+          <div className="overlay" />
+          <div className="card-cta">
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+              <div>
+                <span className="tag-pill" style={{ background: '#1363C4', color: '#fff', marginBottom: 8, display: 'inline-block' }}>{PRODUCTS[1].tag}</span>
+                <div style={{ color: '#fff', fontWeight: 800, fontSize: 20, lineHeight: 1.1 }}>{PRODUCTS[1].name}</div>
+                <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 14, fontWeight: 600, marginTop: 3 }}>{PRODUCTS[1].price}</div>
+              </div>
+              <button className="btn-white" onClick={(e) => {e.stopPropagation();onProduct(PRODUCTS[1]);}}>Ver</button>
+            </div>
+          </div>
+        </div>
+        {/* Tank Lima */}
+        <div className="product-card reveal" style={{ gridColumn: '1/5', height: '54vh', minHeight: 360, transitionDelay: '.16s' }} onClick={() => onProduct(PRODUCTS[2])}>
+          <img src="uploads/arda_lookbook_lime-tank_studio-back.jpg" alt={PRODUCTS[2].name} style={{ objectPosition: 'center top' }} />
+          <div className="overlay" />
+          <div className="card-cta">
+            <span className="tag-pill" style={{ background: '#E7E988', color: '#0D0D0D', marginBottom: 8, display: 'inline-block' }}>{PRODUCTS[2].tag}</span>
+            <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>{PRODUCTS[2].name}</div>
+            <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 13, fontWeight: 600, marginTop: 2 }}>{PRODUCTS[2].price}</div>
+          </div>
+        </div>
+        {/* Back detail */}
+        <div className="product-card reveal" style={{ gridColumn: '5/9', height: '54vh', minHeight: 360, transitionDelay: '.22s' }} onClick={() => onProduct(PRODUCTS[1])}>
+          <img src="uploads/arda_lookbook_navy-set_studio-back-detail.jpg" alt="Navy detail" />
+          <div className="overlay" />
+          <div className="card-cta" style={{ bottom: 14, left: 14 }}>
+            <span style={{ color: 'rgba(255,255,255,.75)', fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase' }}>Detalle espalda racer</span>
+          </div>
+        </div>
+        {/* Windbreaker */}
+        <div className="product-card reveal" style={{ gridColumn: '9/13', height: '54vh', minHeight: 360, transitionDelay: '.28s' }} onClick={() => onProduct(PRODUCTS[3])}>
+          <img src="uploads/arda_lookbook_navy-set_windbreaker-front.jpg" alt={PRODUCTS[3].name} />
+          <div className="overlay" />
+          <div className="card-cta">
+            <div style={{ color: '#fff', fontWeight: 800, fontSize: 18 }}>{PRODUCTS[3].name}</div>
+            <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 13, fontWeight: 600, marginTop: 2 }}>{PRODUCTS[3].price}</div>
+          </div>
+        </div>
+      </div>
+    </section>);
+
+};
+
+
+
+/* ── Hotspot Image ── */
+const HotspotImage = ({ src, pins, onProduct }) => {
+  const [active, setActive] = useState(null);
+  return (
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <img src={src} alt="lookbook" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      {pins.map((pin, i) =>
+      <div key={i} className="hotspot-pin" style={{ top: pin.y, left: pin.x, transform: 'translate(-50%,-50%)' }}
+      onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}
+      onClick={() => onProduct(pin.product)}>
+          <div className="hotspot-dot" />
+          {active === i &&
+        <div className="hotspot-card">
+              <div style={{ fontSize: 12, fontWeight: 800, color: '#0D0D0D', marginBottom: 3 }}>{pin.product.name}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#1363C4' }}>{pin.product.price}</div>
+            </div>
+        }
+        </div>
+      )}
+    </div>);
+
+};
+
+/* ── Lifestyle Band ── */
+const LifestyleBand = ({ onProduct }) =>
+<section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '80vh', overflow: 'hidden' }}>
+    {/* Left — tennis court */}
+    <div style={{ position: 'relative', overflow: 'hidden', cursor: 'pointer' }} onClick={() => onProduct(PRODUCTS[2])}>
+      <img src="uploads/arda_lookbook_lime-shorts_tennis-court.jpg" alt="Tennis"
+    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform .75s cubic-bezier(.25,.46,.45,.94)' }}
+    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.04)'}
+    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(13,13,13,.52) 0%,transparent 55%)' }} />
+      <div style={{ position: 'absolute', bottom: 32, left: 32 }}>
+        <span style={{ color: 'rgba(255,255,255,.6)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>En la cancha</span>
+        <h3 style={{ color: '#fff', fontSize: 'clamp(22px,2.8vw,38px)', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.05 }}>Set Lima<br />+ Short Navy</h3>
+      </div>
+    </div>
+    {/* Right — street crossing with hotspots */}
+    <div style={{ position: 'relative', overflow: 'hidden' }}>
+      <HotspotImage
+      src="uploads/arda_lookbook_navy-set_street-crossing.jpg"
+      onProduct={onProduct}
+      pins={[
+      { x: '38%', y: '42%', product: PRODUCTS[1] },
+      { x: '28%', y: '28%', product: PRODUCTS[3] }]
+      } />
+    
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top,rgba(13,13,13,.45) 0%,transparent 50%)', pointerEvents: 'none' }} />
+      <span className="tag-pill" style={{ position: 'absolute', top: 24, right: 24, background: '#E7E988', color: '#0D0D0D' }}>Del gym a la calle</span>
+      <div style={{ position: 'absolute', bottom: 32, left: 32, pointerEvents: 'none' }}>
+        <span style={{ color: 'rgba(255,255,255,.6)', fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>En la calle</span>
+        <h3 style={{ color: '#fff', fontSize: 'clamp(22px,2.8vw,38px)', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.05 }}>Set Navy<br />+ Windbreaker</h3>
+      </div>
+    </div>
+  </section>;
+
+
+/* ── Editorial Feature ── */
+const EditorialFeature = ({ onProduct }) => {
+  const [sz, setSz] = useState(null);
+  return (
+    <section style={{ display: 'grid', gridTemplateColumns: '55% 1fr', minHeight: '88vh', overflow: 'hidden', background: '#F5F5F3' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <img src="uploads/arda_lookbook_brown-set_studio-front-alt.jpg" alt="Brown set alt"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', position: 'relative' }}>
+        <span style={{ color: '#1363C4', fontSize: 11, fontWeight: 800, letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 18 }}>Bestseller</span>
+        <h2 style={{ fontSize: 'clamp(34px,3.2vw,52px)', fontWeight: 800, letterSpacing: '-.025em', lineHeight: .95, marginBottom: 24 }}>
+          Set<br />Chocolate.
+        </h2>
+        <p style={{ color: '#5a5a5a', fontSize: 15, lineHeight: 1.75, marginBottom: 32, fontWeight: 500 }}>
+          El set que se convirtió en favorito. Bra con soporte máximo y biker con costuras en contraste. La combinación inesperada que define el estilo Arda.
+        </p>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 36, flexWrap: 'wrap' }}>
+          {['XS', 'S', 'M', 'L'].map((s) =>
+          <button key={s} className={`size-btn${sz === s ? ' active' : ''}`} onClick={() => setSz(s)}>{s}</button>
+          )}
+        </div>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <button className="btn-primary" onClick={() => onProduct(PRODUCTS[0])}>Ver producto</button>
+          <span style={{ fontSize: 18, fontWeight: 800, color: '#0D0D0D' }}>$89.990</span>
+        </div>
+        <div style={{ position: 'absolute', top: 0, right: 0, width: 3, height: '40%', background: '#E7E988', borderRadius: '0 0 2px 2px' }} />
+      </div>
+    </section>);
+
+};
+
+/* ── Product Modal ── */
+const ProductModal = ({ product, onClose, onAddCart }) => {
+  const [sz, setSz] = useState(null);
+  const [img, setImg] = useState(0);
+  const [added, setAdded] = useState(false);
+  const [imgKey, setImgKey] = useState(0);
+  const [direction, setDirection] = useState(0);
+  useEffect(() => {if (product) {setSz(null);setImg(0);setImgKey(k => k + 1);setAdded(false);}}, [product]);
+  const goNext = () => {setDirection(1);setImg(i => (i + 1) % product.images.length);};
+  const goPrev = () => {setDirection(-1);setImg(i => (i - 1 + product.images.length) % product.images.length);};
+  if (!product) return null;
+  const handleAdd = () => {if (!sz) return;onAddCart();setAdded(true);setTimeout(() => setAdded(false), 2200);};
+  return (
+    <>
+      <div className="modal-bg" onClick={onClose} />
+      <div className="modal-panel">
+        <div style={{ position: 'relative', height: '45%', minHeight: '280px' }}>
+          <button onClick={onClose} style={{ position: 'absolute', top: 16, right: 16, width: 40, height: 40, borderRadius: '50%', background: '#fff', border: 'none', cursor: 'pointer', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+          </button>
+          <div style={{ position: 'relative', width: '100%', height: '100%', background: '#F5F5F3', overflow: 'hidden' }}
+            onMouseEnter={(e) => {const a=e.currentTarget.querySelectorAll('.carousel-arrow');a[0].style.opacity='1';a[1].style.opacity='1';}}
+            onMouseLeave={(e) => {const a=e.currentTarget.querySelectorAll('.carousel-arrow');a[0].style.opacity='0';a[1].style.opacity='0';}}>
+            <div key={imgKey} style={{ width: '100%', height: '100%', animation: direction >= 0 ? 'imgSlideInRight .45s var(--ease-out-expo)' : 'imgSlideInLeft .45s var(--ease-out-expo)' }}>
+              <img src={product.images[img]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+            </div>
+            <style>{`@keyframes imgSlideInRight{from{transform:translateX(100%)}to{transform:translateX(0)}}@keyframes imgSlideInLeft{from{transform:translateX(-100%)}to{transform:translateX(0)}}`}</style>
+            {product.images.length > 1 &&
+            <button className="carousel-arrow" onClick={goPrev} style={{ left: 16, opacity: 0, transition: 'opacity .3s var(--ease-out-quart)' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" strokeWidth="2"><polyline points="15,18 9,12 15,6" /></svg>
+            </button>}
+            {product.images.length > 1 &&
+            <button className="carousel-arrow" onClick={goNext} style={{ right: 16, opacity: 0, transition: 'opacity .3s var(--ease-out-quart)' }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" strokeWidth="2"><polyline points="9,18 15,12 9,6" /></svg>
+            </button>}
+            {product.images.length > 1 &&
+            <div style={{ position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
+                {product.images.map((_, i) =>
+            <button key={i} onClick={() => setImg(i)} style={{ width: 7, height: 7, borderRadius: '50%', border: 'none', background: i === img ? '#0D0D0D' : 'rgba(0,0,0,.28)', cursor: 'pointer', padding: 0, transition: 'background .2s' }} />
+            )}
+            </div>
+          }
+            {product.tag && <span className="tag-pill" style={{ position: 'absolute', top: 14, left: 14, background: product.tagColor, color: product.tagText }}>{product.tag}</span>}
+          </div>
+        </div>
+        <div className="modal-scroll" style={{ height: '55%' }}>
+          <div style={{ padding: '28px 28px 40px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
+              <h2 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-.02em' }}>{product.name}</h2>
+              <span style={{ fontSize: 20, fontWeight: 800, color: '#1363C4' }}>{product.price}</span>
+            </div>
+            <div style={{ display: 'flex', gap: 10, marginBottom: 18 }}>
+              <span className="tag-pill" style={{ background: '#f3f3f3', color: '#666', fontSize: 11 }}>{product.category}</span>
+              <span className="tag-pill" style={{ background: '#f3f3f3', color: '#666', fontSize: 11 }}>{product.color}</span>
+            </div>
+            <p style={{ color: '#4a4a4a', fontSize: 14, lineHeight: 1.75, marginBottom: 24, fontWeight: 500 }}>{product.desc}</p>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase' }}>Talla</span>
+                <a href="#" style={{ fontSize: 12, color: '#1363C4', fontWeight: 600, textDecoration: 'none' }}>Guía →</a>
+              </div>
+              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+                {product.sizes.map((s) =>
+                <button key={s} className={`size-btn${sz === s ? ' active' : ''}${product.unavailable.includes(s) ? ' unavailable' : ''}`}
+                onClick={() => !product.unavailable.includes(s) && setSz(s)}>{s}</button>
+                )}
+              </div>
+              {!sz && <p style={{ color: '#d94040', fontSize: 11, fontWeight: 600, marginTop: 7, letterSpacing: '.03em' }}>Selecciona una talla para continuar</p>}
+            </div>
+            <button onClick={handleAdd}
+            style={{ width: '100%', padding: '15px', background: added ? '#1a7a3a' : sz ? '#1363C4' : '#c8c8c8', color: '#fff', border: 'none', fontFamily: 'Rethink Sans', fontWeight: 800, fontSize: 14, letterSpacing: '.07em', textTransform: 'uppercase', cursor: sz ? 'pointer' : 'not-allowed', transition: 'background .3s', borderRadius: 100, marginBottom: 10 }}>
+              {added ? '¡Agregado al carro ✓' : 'Agregar al carro'}
+            </button>
+            <button style={{ width: '100%', padding: '14px', background: 'transparent', color: '#0D0D0D', border: '1.5px solid #e0e0e0', fontFamily: 'Rethink Sans', fontWeight: 700, fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 100, transition: 'border-color .2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = '#0D0D0D'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e0e0e0'}>
+              Guardar en wishlist
+            </button>
+            <div style={{ marginTop: 28, paddingTop: 20, borderTop: '1px solid #f0f0f0' }}>
+              {[['Detalles', 'Material de compresión premium. Costuras planas. Secado rápido. UPF 50+.'], ['Envío', 'Gratis sobre $60.000. Devolución hasta 30 días. Despacho 24–48 hrs.']].map(([t, c]) =>
+              <details key={t} style={{ marginBottom: 8 }}>
+                  <summary style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase', cursor: 'pointer', listStyle: 'none', display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #f5f5f5' }}>
+                    {t}<span style={{ color: '#aaa' }}>+</span>
+                  </summary>
+                  <p style={{ color: '#6a6a6a', fontSize: 13, lineHeight: 1.65, padding: '10px 0' }}>{c}</p>
+                </details>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>);
+
+};
+
+/* ── Footer ── */
+const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [sent, setSent] = useState(false);
+  return (
+    <footer style={{ 
+      background: '#1363C4', 
+      overflow: 'hidden',
+      height: '100svh',
+      paddingTop: '68px',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: -1 
+    }}>
+      {/* Top grid */}
+      <div style={{ padding: '40px 48px', flexShrink: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1fr 1fr', gap: 40 }}>
+          <div>
+            <p style={{ color: 'rgba(255,255,255,.6)', fontSize: 14, lineHeight: 1.8, marginBottom: 28, fontWeight: 400, maxWidth: 260 }}>Activewear femenino de alto impacto. Hecho en Chile, diseñado para moverse.</p>
+            <div style={{ display: 'flex', gap: 0, borderRadius: 100, overflow: 'hidden', background: 'rgba(255,255,255,.1)', maxWidth: 280 }}>
+              <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@email.com"
+              style={{ flex: 1, padding: '11px 16px', background: 'transparent', border: 'none', color: '#fff', fontFamily: 'Rethink Sans', fontSize: 13, outline: 'none' }} />
+              <button onClick={() => {if (email) {setSent(true);setEmail('');}}}
+              style={{ padding: '11px 16px', background: '#1363C4', border: 'none', color: '#fff', fontFamily: 'Rethink Sans', fontWeight: 700, fontSize: 11, letterSpacing: '.07em', textTransform: 'uppercase', cursor: 'pointer', whiteSpace: 'nowrap', transition: 'background .2s' }}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#0f4fa0'}
+              onMouseLeave={(e) => e.currentTarget.style.background = '#1363C4'}>
+                {sent ? '✓' : 'OK'}
+              </button>
+            </div>
+            <div style={{ display: 'flex', gap: 20, marginTop: 24 }}>
+              {['Instagram', 'TikTok', 'Pinterest'].map((s) =>
+              <a key={s} href="#" style={{ color: 'rgba(255,255,255,.55)', fontSize: 11, fontWeight: 700, letterSpacing: '.07em', textDecoration: 'none', transition: 'color .2s', textTransform: 'uppercase' }}
+              onMouseEnter={(e) => e.target.style.color = '#fff'}
+              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,.55)'}>{s}</a>
+              )}
+            </div>
+          </div>
+          {[
+          { t: 'Tienda', ls: ['Colección SS25', 'Sets', 'Tops', 'Outers', 'Sale'] },
+          { t: 'Info', ls: ['Sobre Arda', 'Lookbook', 'Sustentabilidad', 'Blog'] },
+          { t: 'Ayuda', ls: ['Guía de tallas', 'Envíos', 'Devoluciones', 'Contacto'] }].
+          map((col) =>
+          <div key={col.t}>
+              <span style={{ color: 'rgba(255,255,255,.25)', fontSize: 10, fontWeight: 700, letterSpacing: '.13em', textTransform: 'uppercase', display: 'block', marginBottom: 16 }}>{col.t}</span>
+              {col.ls.map((l) =>
+            <a key={l} href="#" style={{ display: 'block', color: 'rgba(255,255,255,.65)', fontSize: 13, fontWeight: 500, textDecoration: 'none', marginBottom: 9, transition: 'color .2s' }}
+            onMouseEnter={(e) => e.target.style.color = '#fff'}
+            onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,.65)'}>{l}</a>
+            )}
+            </div>
+          )}
+        </div>
+      </div>
+      {/* Full-width logo pegado al bottom */}
+      <div style={{ flexGrow: 1, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+        <svg width="100%" viewBox="0 0 737 275" preserveAspectRatio="xMidYMax meet" style={{ display: 'block', width: '100%', height: 'auto', maxHeight: '100%' }}>
+          <path d="M519.103 0H469.813C467.079 0 464.861 2.21417 464.861 4.94165V85.5633C464.861 88.9267 463.072 91.8381 460.085 93.3474C457.076 94.872 453.505 94.5579 450.764 92.5506C436.622 82.1693 418.779 76.6837 399.163 76.6837C372.821 76.6837 350.402 86.023 334.332 103.69C318.217 121.411 309.702 146.158 309.702 175.256C309.702 204.354 318.217 229.384 334.332 247.151C350.386 264.849 372.798 274.204 399.155 274.204C418.541 274.204 436.392 268.657 450.787 258.161C453.528 256.161 457.091 255.87 460.093 257.387C463.079 258.896 464.861 261.808 464.861 265.164C464.861 267.891 467.079 270.105 469.813 270.105H519.103C521.837 270.105 524.056 267.891 524.056 265.164V4.94165C524.056 2.21417 521.837 0 519.103 0ZM416.691 230.756C389.888 230.756 371.876 208.446 371.876 175.241C371.876 142.036 389.888 120.101 416.691 120.101C443.494 120.101 461.874 142.258 461.874 175.241C461.874 208.223 443.716 230.756 416.691 230.756Z" fill="#E7E988" />
+          <path d="M736.128 263.25C733.027 255.902 731.522 246.839 731.522 235.538V141.379C731.522 121.965 722.908 105.676 706.608 94.2836C690.124 82.7608 666.515 76.6699 638.338 76.6699C584.018 76.6699 550.72 99.1717 546.989 138.406C546.851 139.839 547.327 141.264 548.286 142.321C549.231 143.355 550.52 143.922 551.918 143.922H604.218C606.721 143.922 608.871 142.045 609.117 139.647C611.028 121.244 622.115 111.913 642.062 111.913C668.657 111.913 672.327 129.289 672.327 148.067V150.304C672.327 163.382 652.204 165.834 626.721 168.937C588.379 173.603 540.662 179.41 540.662 222.881C540.662 254.048 566.26 274.19 605.877 274.19C633.846 274.19 655.743 264.047 669.202 244.862L672.695 239.882V247.368C673.31 254.47 677.21 263.732 681.594 268.49C682.531 269.509 683.874 270.091 685.264 270.091H731.576C733.265 270.091 734.762 269.287 735.691 267.893C736.62 266.491 736.781 264.797 736.128 263.234V263.25ZM672.327 195.346C672.327 222.33 655.282 241.177 630.875 241.177C614.115 241.177 602.844 231.73 602.844 217.672C602.844 198.549 623.796 193.707 644.05 189.025C649.693 187.723 655.536 186.375 660.972 184.735C663.674 183.915 666.523 184.413 668.78 186.083C671.029 187.746 672.319 190.313 672.319 193.109V195.339L672.327 195.346Z" fill="#E7E988" />
+          <path d="M300.804 76.6776C299.046 76.7006 280.78 77.1756 268.734 78.1562C252.588 79.4817 241.893 84.2395 230.584 95.1494C220.288 105.079 212.518 123.719 208.119 149.048L194.514 227.815C193.716 229.723 190.867 229.156 190.867 227.088V141.379C190.859 121.965 182.245 105.676 165.945 94.2836C149.461 82.7608 125.86 76.6699 97.6755 76.6699C43.3482 76.6699 10.0501 99.1717 6.31873 138.406C6.10376 140.689 7.42432 142.949 9.79672 143.715C10.2804 143.869 10.7871 143.922 11.2939 143.922H63.5558C66.0588 143.922 68.2085 142.045 68.4542 139.647C70.366 121.244 81.4525 111.913 101.399 111.913C127.995 111.913 131.665 129.289 131.665 148.067V150.304C131.665 163.382 111.541 165.834 86.0591 168.937C47.7168 173.611 0 179.418 0 222.889C0 254.056 25.5974 274.198 65.2142 274.198C93.184 274.198 115.081 264.054 128.54 244.87L132.033 239.89V247.375C132.647 254.485 136.548 263.748 140.932 268.498C141.868 269.517 143.212 270.099 144.601 270.099L245.317 270.068C246.822 270.068 248.104 268.996 248.373 267.525L267.421 163.551C267.659 162.203 267.951 160.793 268.35 159.123L268.373 159.031C272.274 145.784 281.878 138.904 296.927 138.575C299.337 138.521 301.387 136.529 301.595 134.047L305.84 82.0253C305.956 80.6309 305.487 79.3055 304.535 78.2788C303.576 77.2522 302.217 76.6699 300.796 76.6699L300.804 76.6776ZM131.657 195.346C131.657 222.33 114.612 241.177 90.2051 241.177C73.4447 241.177 62.1739 231.73 62.1739 217.672C62.1739 198.549 83.1263 193.707 103.38 189.025C109.023 187.723 114.866 186.375 120.302 184.735C123.25 183.846 126.375 184.513 128.716 186.566C130.651 188.267 131.657 190.795 131.657 193.369V195.346Z" fill="#E7E988" />
+        </svg>
+        {/* Bottom bar inside logo wrapper, absolute so the SVG touches the bottom */}
+        <div style={{ position: 'absolute', bottom: 16, left: 48, right: 48, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+          <span style={{ color: 'rgba(13, 13, 13, 0.65)', fontSize: 11, fontWeight: 700 }}>© 2025 Arda. Todos los derechos reservados.</span>
+          <span style={{ color: 'rgba(13, 13, 13, 0.65)', fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase' }}>Stay cool. Keep moving.</span>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+/* ── Tweaks ── */
+const TWEAK_DEFAULS = /*EDITMODE-BEGIN*/{
+  "heroLayout": "full-bleed",
+  "heroImageY": 38,
+  "gridStyle": "editorial",
+  "accentColor": "#E7E988",
+  "cardGap": 120
+} /*EDITMODE-END*/;
+
+const TweaksPanel = ({ open, heroLayout, setHeroLayout, heroImageY, setHeroImageY, cardGap, setCardGap, revealDelay, setRevealDelay, revealDuration, setRevealDuration, stagger, setStagger }) => {
+  const post = (edits) => window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+  return (
+    <div className={`tweaks-panel${open ? ' open' : ''}`}>
+      <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 14 }}>Tweaks</span>
+      <div className="tweak-row">
+        <span className="tweak-label">Estilo Hero</span>
+        <select className="tweak-select" value={heroLayout} onChange={(e) => {setHeroLayout(e.target.value);post({ heroLayout: e.target.value });}}>
+          <option value="full-bleed">Full bleed foto</option>
+          <option value="split">Split foto / texto</option>
+          <option value="aurora">Aurora gradient</option>
+        </select>
+      </div>
+      <div className="tweak-row">
+        <span className="tweak-label">Posición imagen hero — {heroImageY}%</span>
+        <input type="range" min="0" max="80" step="1" value={heroImageY}
+        style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+        onChange={(e) => {const v = Number(e.target.value);setHeroImageY(v);post({ heroImageY: v });}} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
+          <span>Arriba</span><span>Abajo</span>
+        </div>
+      </div>
+      <div className="tweak-row">
+        <span className="tweak-label">Gap entre cards — {cardGap}px</span>
+        <input type="range" min="0" max="100" step="2" value={cardGap}
+        style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+        onChange={(e) => {const v = Number(e.target.value);setCardGap(v);post({ cardGap: v });}} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
+          <span>0px</span><span>100px</span>
+        </div>
+      </div>
+      <div style={{ borderTop: '1px solid #eee', marginTop: 8, paddingTop: 12 }}>
+        <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 12, color: '#1363C4' }}>Animation</span>
+        <div className="tweak-row">
+          <span className="tweak-label">Reveal Delay — {revealDelay}ms</span>
+          <input type="range" min="0" max="300" step="10" value={revealDelay}
+          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          onChange={(e) => {const v = Number(e.target.value);setRevealDelay(v);post({ revealDelay: v });}} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
+            <span>0</span><span>300</span>
+          </div>
+        </div>
+        <div className="tweak-row">
+          <span className="tweak-label">Reveal Duration — {revealDuration}ms</span>
+          <input type="range" min="200" max="800" step="50" value={revealDuration}
+          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          onChange={(e) => {const v = Number(e.target.value);setRevealDuration(v);post({ revealDuration: v });}} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
+            <span>200</span><span>800</span>
+          </div>
+        </div>
+        <div className="tweak-row">
+          <span className="tweak-label">Stagger — {stagger}ms</span>
+          <input type="range" min="0" max="200" step="10" value={stagger}
+          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          onChange={(e) => {const v = Number(e.target.value);setStagger(v);post({ stagger: v });}} />
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
+            <span>0</span><span>200</span>
+          </div>
+        </div>
+      </div>
+    </div>);
+
+};
+
+/* ── App ── */
+const App = () => {
+  const [scrolled, setScrolled] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [cart, setCart] = useState(0);
+  const [tweaksOpen, setTweaksOpen] = useState(false);
+  const [heroLayout, setHeroLayout] = useState(TWEAK_DEFAULS.heroLayout);
+  const [heroImageY, setHeroImageY] = useState(TWEAK_DEFAULS.heroImageY);
+  const [cardGap, setCardGap] = useState(TWEAK_DEFAULS.cardGap);
+  const [revealDelay, setRevealDelay] = useState(80);
+  const [revealDuration, setRevealDuration] = useState(700);
+  const [stagger, setStagger] = useState(80);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    const h = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', h);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', h);
+  }, []);
+
+  useEffect(() => {
+    setTweaksOpen(false);
+  }, []);
+
+  const toShop = () => {const el = document.getElementById('coleccion');if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });};
+  const tickerItems = ['Stay cool. Keep moving.', 'Activewear femenino', 'Hecho en Chile', 'SS 2025', 'Carácter + Versatilidad', 'Envío gratis sobre $60k'];
+
+  return (
+    <>
+      {/* Wrapper con marginBottom de 100svh para revelar el footer de abajo */}
+      <div style={{ position: 'relative', zIndex: 1, background: '#fff', marginBottom: '100svh' }}>
+        <Nav cartCount={cart} scrolled={scrolled} onCartOpen={() => {}} />
+        <Hero onShop={toShop} layout={heroLayout} imageY={heroImageY} />
+        <Ticker bg='#0D0D0D' textColor='#E7E988' items={tickerItems} speed={26} />
+        <StickyScroll onProduct={setProduct} cardGap={cardGap} />
+        <ProductGrid onProduct={setProduct} revealDelay={revealDelay} revealDuration={revealDuration} stagger={stagger} />
+        <Ticker bg='#1363C4' textColor='rgba(255,255,255,.85)' items={tickerItems} speed={20} />
+        <LifestyleBand onProduct={setProduct} />
+        <EditorialFeature onProduct={setProduct} />
+      </div>
+      
+      <Footer />
+      <ProductModal product={product} onClose={() => setProduct(null)} onAddCart={() => setCart((c) => c + 1)} />
+    </>);
+
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
