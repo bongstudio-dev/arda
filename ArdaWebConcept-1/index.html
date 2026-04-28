@@ -13,7 +13,7 @@
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --blue:#1363C4;--yellow:#E7E988;--black:#0D0D0D;--white:#FFFFFF;--gray:#6b6b6b;--light:#F5F5F3;
+    --blue:#2D68C4;--yellow:#E7E988;--black:#0D0D0D;--white:#FFFFFF;--gray:#6b6b6b;--light:#F5F5F3;
     --r-sm:10px;--r-md:16px;--r-lg:24px;--r-pill:100px;
   }
   html{scroll-behavior:smooth}
@@ -47,7 +47,7 @@
     padding:13px 24px 13px 28px;border:none;cursor:pointer;border-radius:0;
     transition:background .4s var(--ease-out-quart);
   }
-  .btn-primary:hover{background:#0f4fa0}
+  .btn-primary:hover{background:#2D68C4}
   .btn-primary .arrow{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:rgba(255,255,255,.18);border-radius:0;transition:transform .5s var(--ease-out-expo)}
   .btn-primary:hover .arrow{transform:translateX(4px)}
 
@@ -126,13 +126,13 @@
   select.tweak-select{width:100%;padding:8px 10px;font-family:'Rethink Sans',sans-serif;font-size:13px;border:1.5px solid #e0e0e0;background:#fff;cursor:pointer;outline:none;border-radius:0}
 
   /* Tweak toggle button */
-  .tweak-toggle{position:fixed;bottom:24px;right:24px;width:48px;height:48px;background:#1363C4;border:none;border-radius:0;cursor:pointer;z-index:901;box-shadow:0 4px 16px rgba(19,99,196,.35);display:flex;align-items:center;justify-content:center;transition:transform .3s var(--ease-out-quart)}
+  .tweak-toggle{position:fixed;bottom:24px;right:24px;width:48px;height:48px;background:#2D68C4;border:none;border-radius:0;cursor:pointer;z-index:901;box-shadow:0 4px 16px rgba(45,104,196,.35);display:flex;align-items:center;justify-content:center;transition:transform .3s var(--ease-out-quart)}
   .tweak-toggle:hover{transform:scale(1.08)}
   .tweak-toggle svg{width:22px;height:22px;stroke:#fff;stroke-width:2.5;fill:none}
   
   /* Range input */
   input[type=range]{-webkit-appearance:none;width:100%;height:6px;background:#e8e8e8;border-radius:0;outline:none}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:#1363C4;border-radius:0;cursor:pointer;transition:transform .2s}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;background:#2D68C4;border-radius:0;cursor:pointer;transition:transform .2s}
   input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 
   @media(max-width:768px){.hide-mobile{display:none!important}.modal-panel{width:calc(100vw - 32px);right:16px;top:16px;bottom:16px;border-radius:0}}
@@ -142,7 +142,7 @@
 <div id="root"></div>
 
 <!-- Preloader -->
-<div id="preloader" style="position:fixed;inset:0;background:#1363C4;z-index:9999;display:flex;align-items:center;justify-content:center;will-change:transform">
+<div id="preloader" style="position:fixed;inset:0;background:#2D68C4;z-index:9999;display:flex;align-items:center;justify-content:center;will-change:transform">
   <svg id="preloader-logo" width="220" viewBox="0 0 737 275" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1">
     <defs>
       <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="0" gradientUnits="userSpaceOnUse">
@@ -224,7 +224,7 @@ const ArdaLogo = ({ color = '#0D0D0D', height = 32 }) =>
 
 const PRODUCTS = [
 { id: 1, name: 'Set Chocolate', tag: 'Más vendido', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$89.990', desc: 'Bra + Biker de alto impacto. Compresión premium con costuras en contraste. Del gym a la calle.', images: ['uploads/optimized/arda_lookbook_brown-set_studio-front.jpg', 'uploads/optimized/arda_lookbook_brown-set_studio-front-alt.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['XS'], color: 'Chocolate / Azul cielo', category: 'Set' },
-{ id: 2, name: 'Set Navy Racer', tag: 'Nueva colección', tagColor: '#1363C4', tagText: '#fff', price: '$94.990', desc: 'Bra con espalda racer y biker de cintura alta. Diseño bicolor con costuras en contraste crema.', images: ['uploads/optimized/arda_lookbook_navy-set_studio-front.jpg', 'uploads/optimized/arda_lookbook_navy-set_studio-back-detail.jpg'], sizes: ['XS', 'S', 'M', 'L', 'XL'], unavailable: [], color: 'Navy / Crema', category: 'Set' },
+{ id: 2, name: 'Set Navy Racer', tag: 'Nueva colección', tagColor: '#2D68C4', tagText: '#fff', price: '$94.990', desc: 'Bra con espalda racer y biker de cintura alta. Diseño bicolor con costuras en contraste crema.', images: ['uploads/optimized/arda_lookbook_navy-set_studio-front.jpg', 'uploads/optimized/arda_lookbook_navy-set_studio-back-detail.jpg'], sizes: ['XS', 'S', 'M', 'L', 'XL'], unavailable: [], color: 'Navy / Crema', category: 'Set' },
 { id: 3, name: 'Tank Lima', tag: 'Edición limitada', tagColor: '#E7E988', tagText: '#0D0D0D', price: '$49.990', desc: 'Tank crop con abertura en espalda. Tela ultra liviana. Color lima que define la temporada.', images: ['uploads/optimized/arda_lookbook_lime-tank_studio-back.jpg', 'uploads/optimized/arda_lookbook_lime-shorts_tennis-court.jpg'], sizes: ['XS', 'S', 'M', 'L'], unavailable: ['L'], color: 'Lima / Crema', category: 'Top' },
 { id: 4, name: 'Windbreaker Navy', tag: '', tagColor: '', tagText: '', price: '$119.990', desc: 'Cortavientos oversized con detalle de cinta azul eléctrico. El layer perfecto para días de transición.', images: ['uploads/optimized/arda_lookbook_navy-set_windbreaker-front.jpg', 'uploads/optimized/arda_lookbook_navy-set_street-crossing.jpg'], sizes: ['S', 'M', 'L', 'XL'], unavailable: ['XL'], color: 'Beige / Navy', category: 'Outer' }];
 
@@ -257,7 +257,7 @@ const Nav = ({ cartCount, scrolled, onCartOpen }) => {
         padding: '0 28px',
         height: 52,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: scrolled ? 'rgba(255,255,255,0.68)' : '#1363C4',
+        background: scrolled ? 'rgba(255,255,255,0.68)' : '#2D68C4',
         backdropFilter: 'blur(24px) saturate(200%)',
         WebkitBackdropFilter: 'blur(24px) saturate(200%)',
         borderRadius: 999,
@@ -279,7 +279,7 @@ const Nav = ({ cartCount, scrolled, onCartOpen }) => {
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={scrolled ? '#0D0D0D' : '#fff'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" />
             </svg>
-            {cartCount > 0 && <span style={{ position: 'absolute', top: -2, right: -2, background: '#1363C4', color: '#fff', borderRadius: 0, width: 16, height: 16, fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{cartCount}</span>}
+            {cartCount > 0 && <span style={{ position: 'absolute', top: -2, right: -2, background: '#2D68C4', color: '#fff', borderRadius: 0, width: 16, height: 16, fontSize: 9, fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{cartCount}</span>}
           </button>
         </div>
       </div>
@@ -331,7 +331,7 @@ const HeroSplit = ({ onShop }) =>
       </div>
     </div>
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '56px 48px', position: 'relative', background: '#fff' }}>
-      <div style={{ width: 2, height: 40, background: '#1363C4', borderRadius: 0, marginBottom: 28 }} />
+      <div style={{ width: 2, height: 40, background: '#2D68C4', borderRadius: 0, marginBottom: 28 }} />
       <span style={{ color: '#a0a0a0', fontSize: 11, fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 16 }}>Nueva colección</span>
       <h1 style={{ fontSize: 'clamp(40px,4vw,64px)', fontWeight: 800, lineHeight: .92, letterSpacing: '-.025em', marginBottom: 24, color: '#0D0D0D' }}>
         Stay cool.<br />Keep<br />moving.
@@ -345,7 +345,7 @@ const HeroSplit = ({ onShop }) =>
       </div>
       <div style={{ display: 'flex', gap: 28, marginTop: 44, paddingTop: 28, borderTop: '1px solid #f0f0f0' }}>
         {[['4', 'Colecciones'], ['100%', 'Chilena'], ['SS25', 'Temporada']].map(([v, l]) =>
-      <div key={l}><div style={{ fontSize: 20, fontWeight: 800, color: '#1363C4', letterSpacing: '-.02em' }}>{v}</div><div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#c0c0c0', marginTop: 2 }}>{l}</div></div>
+      <div key={l}><div style={{ fontSize: 20, fontWeight: 800, color: '#2D68C4', letterSpacing: '-.02em' }}>{v}</div><div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#c0c0c0', marginTop: 2 }}>{l}</div></div>
       )}
       </div>
       <div style={{ position: 'absolute', bottom: 0, right: 0, width: 100, height: 4, background: '#E7E988', borderRadius: 0 }} />
@@ -386,7 +386,7 @@ const HeroThreeCol = ({ onShop, animDuration = 1.4, delay1 = 0.25, delay2 = 0.08
     ...extra
   });
   return (
-    <section style={{ height: '100svh', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', paddingTop: 80, background: '#1363C4' }}>
+    <section style={{ height: '100svh', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', paddingTop: 80, background: '#2D68C4' }}>
       {/* Col 1 */}
       <div style={col(delay1)}>
         <SmartImage src="uploads/optimized/arda_lookbook_lime-tank_studio-back.jpg" alt="Arda SS25" loading="eager" fetchPriority="high"
@@ -494,7 +494,7 @@ const StickyScroll = ({ onProduct, cardGap = 24 }) => {
 
   return (
     <div ref={containerRef} id="coleccion" style={{ height: `${N * 100 + 85 + cardGap * 0.5}vh`, position: 'relative' }}>
-      <div style={{ position: 'sticky', top: 0, height: '100vh', padding: '80px 32px 48px', background: '#1363C4', overflow: 'hidden' }}>
+      <div style={{ position: 'sticky', top: 0, height: '100vh', padding: '80px 32px 48px', background: '#2D68C4', overflow: 'hidden' }}>
 
         <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: 1300, margin: '0 auto' }}>
           {cards.map((card, i) =>
@@ -551,7 +551,7 @@ const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagge
           <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: '#aaa' }}>Colección SS 2025</span>
           <h2 style={{ fontSize: 'clamp(28px,3.5vw,48px)', fontWeight: 800, letterSpacing: '-.025em', marginTop: 6 }}>Lo más nuevo.</h2>
         </div>
-        <a href="#" style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#1363C4', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>Ver todo <span>→</span></a>
+        <a href="#" style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', color: '#2D68C4', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6 }}>Ver todo <span>→</span></a>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12,1fr)', gap: 14 }}>
         {/* Large — brown set */}
@@ -576,7 +576,7 @@ const ProductGrid = ({ onProduct, revealDelay = 80, revealDuration = 700, stagge
           <div className="card-cta">
             <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
               <div>
-                <span className="tag-pill" style={{ background: '#1363C4', color: '#fff', marginBottom: 8, display: 'inline-block' }}>{PRODUCTS[1].tag}</span>
+                <span className="tag-pill" style={{ background: '#2D68C4', color: '#fff', marginBottom: 8, display: 'inline-block' }}>{PRODUCTS[1].tag}</span>
                 <div style={{ color: '#fff', fontWeight: 800, fontSize: 20, lineHeight: 1.1 }}>{PRODUCTS[1].name}</div>
                 <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 14, fontWeight: 600, marginTop: 3 }}>{PRODUCTS[1].price}</div>
               </div>
@@ -632,7 +632,7 @@ const HotspotImage = ({ src, pins, onProduct }) => {
           {active === i &&
         <div className="hotspot-card">
               <div style={{ fontSize: 12, fontWeight: 800, color: '#0D0D0D', marginBottom: 3 }}>{pin.product.name}</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#1363C4' }}>{pin.product.price}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#2D68C4' }}>{pin.product.price}</div>
             </div>
         }
         </div>
@@ -686,7 +686,7 @@ const EditorialFeature = ({ onProduct }) => {
         style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', position: 'relative' }}>
-        <span style={{ color: '#1363C4', fontSize: 11, fontWeight: 800, letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 18 }}>Bestseller</span>
+        <span style={{ color: '#2D68C4', fontSize: 11, fontWeight: 800, letterSpacing: '.14em', textTransform: 'uppercase', marginBottom: 18 }}>Bestseller</span>
         <h2 style={{ fontSize: 'clamp(34px,3.2vw,52px)', fontWeight: 800, letterSpacing: '-.025em', lineHeight: .95, marginBottom: 24 }}>
           Set<br />Chocolate.
         </h2>
@@ -757,7 +757,7 @@ const ProductModal = ({ product, onClose, onAddCart }) => {
           <div style={{ padding: '28px 28px 40px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 10 }}>
               <h2 style={{ fontSize: 26, fontWeight: 800, letterSpacing: '-.02em' }}>{product.name}</h2>
-              <span style={{ fontSize: 20, fontWeight: 800, color: '#1363C4' }}>{product.price}</span>
+              <span style={{ fontSize: 20, fontWeight: 800, color: '#2D68C4' }}>{product.price}</span>
             </div>
             <div style={{ display: 'flex', gap: 10, marginBottom: 18 }}>
               <span className="tag-pill" style={{ background: '#f3f3f3', color: '#666', fontSize: 11 }}>{product.category}</span>
@@ -767,7 +767,7 @@ const ProductModal = ({ product, onClose, onAddCart }) => {
             <div style={{ marginBottom: 24 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.07em', textTransform: 'uppercase' }}>Talla</span>
-                <a href="#" style={{ fontSize: 12, color: '#1363C4', fontWeight: 600, textDecoration: 'none' }}>Guía →</a>
+                <a href="#" style={{ fontSize: 12, color: '#2D68C4', fontWeight: 600, textDecoration: 'none' }}>Guía →</a>
               </div>
               <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
                 {product.sizes.map((s) =>
@@ -778,7 +778,7 @@ const ProductModal = ({ product, onClose, onAddCart }) => {
               {!sz && <p style={{ color: '#d94040', fontSize: 11, fontWeight: 600, marginTop: 7, letterSpacing: '.03em' }}>Selecciona una talla para continuar</p>}
             </div>
             <button onClick={handleAdd}
-            style={{ width: '100%', padding: '15px', background: added ? '#1a7a3a' : sz ? '#1363C4' : '#c8c8c8', color: '#fff', border: 'none', fontFamily: 'Rethink Sans', fontWeight: 800, fontSize: 14, letterSpacing: '.07em', textTransform: 'uppercase', cursor: sz ? 'pointer' : 'not-allowed', transition: 'background .3s', borderRadius: 0, marginBottom: 10 }}>
+            style={{ width: '100%', padding: '15px', background: added ? '#1a7a3a' : sz ? '#2D68C4' : '#c8c8c8', color: '#fff', border: 'none', fontFamily: 'Rethink Sans', fontWeight: 800, fontSize: 14, letterSpacing: '.07em', textTransform: 'uppercase', cursor: sz ? 'pointer' : 'not-allowed', transition: 'background .3s', borderRadius: 0, marginBottom: 10 }}>
               {added ? '¡Agregado al carro ✓' : 'Agregar al carro'}
             </button>
             <button style={{ width: '100%', padding: '14px', background: 'transparent', color: '#0D0D0D', border: '1.5px solid #e0e0e0', fontFamily: 'Rethink Sans', fontWeight: 700, fontSize: 13, letterSpacing: '.06em', textTransform: 'uppercase', cursor: 'pointer', borderRadius: 0, transition: 'border-color .2s' }}
@@ -809,7 +809,7 @@ const Footer = () => {
   const [sent, setSent] = useState(false);
   return (
     <footer style={{
-      background: '#1363C4',
+      background: '#2D68C4',
       overflow: 'hidden',
       height: '100svh',
       paddingTop: '68px',
@@ -900,37 +900,37 @@ const TweaksPanel = ({ open, heroLayout, setHeroLayout, heroImageY, setHeroImage
         </select>
       </div>
       <div style={{ borderTop: '1px solid #eee', marginTop: 4, paddingTop: 12, marginBottom: 4 }}>
-        <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 12, color: '#1363C4' }}>Hero — Animación</span>
+        <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 12, color: '#2D68C4' }}>Hero — Animación</span>
         <div className="tweak-row">
           <span className="tweak-label">Duración — {heroAnimDuration}s</span>
           <input type="range" min="0.4" max="3" step="0.1" value={heroAnimDuration}
-          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
           onChange={(e) => {const v = Number(e.target.value);setHeroAnimDuration(v);post({ heroAnimDuration: v });}} />
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}><span>Rápido</span><span>Lento</span></div>
         </div>
         <div className="tweak-row">
           <span className="tweak-label">Col 1 delay — {heroDelay1}s</span>
           <input type="range" min="0" max="1.5" step="0.05" value={heroDelay1}
-          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
           onChange={(e) => {const v = Number(e.target.value);setHeroDelay1(v);post({ heroDelay1: v });}} />
         </div>
         <div className="tweak-row">
           <span className="tweak-label">Col 2 delay — {heroDelay2}s</span>
           <input type="range" min="0" max="1.5" step="0.05" value={heroDelay2}
-          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
           onChange={(e) => {const v = Number(e.target.value);setHeroDelay2(v);post({ heroDelay2: v });}} />
         </div>
         <div className="tweak-row">
           <span className="tweak-label">Col 3 delay — {heroDelay3}s</span>
           <input type="range" min="0" max="1.5" step="0.05" value={heroDelay3}
-          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
           onChange={(e) => {const v = Number(e.target.value);setHeroDelay3(v);post({ heroDelay3: v });}} />
         </div>
       </div>
       <div className="tweak-row">
         <span className="tweak-label">Posición imagen hero — {heroImageY}%</span>
         <input type="range" min="0" max="80" step="1" value={heroImageY}
-        style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+        style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
         onChange={(e) => {const v = Number(e.target.value);setHeroImageY(v);post({ heroImageY: v });}} />
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
           <span>Arriba</span><span>Abajo</span>
@@ -939,18 +939,18 @@ const TweaksPanel = ({ open, heroLayout, setHeroLayout, heroImageY, setHeroImage
       <div className="tweak-row">
         <span className="tweak-label">Gap entre cards — {cardGap}px</span>
         <input type="range" min="0" max="100" step="2" value={cardGap}
-        style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+        style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
         onChange={(e) => {const v = Number(e.target.value);setCardGap(v);post({ cardGap: v });}} />
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
           <span>0px</span><span>100px</span>
         </div>
       </div>
       <div style={{ borderTop: '1px solid #eee', marginTop: 8, paddingTop: 12 }}>
-        <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 12, color: '#1363C4' }}>Animation</span>
+        <span style={{ fontSize: 10, fontWeight: 800, letterSpacing: '.1em', textTransform: 'uppercase', display: 'block', marginBottom: 12, color: '#2D68C4' }}>Animation</span>
         <div className="tweak-row">
           <span className="tweak-label">Reveal Delay — {revealDelay}ms</span>
           <input type="range" min="0" max="300" step="10" value={revealDelay}
-          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
           onChange={(e) => {const v = Number(e.target.value);setRevealDelay(v);post({ revealDelay: v });}} />
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
             <span>0</span><span>300</span>
@@ -959,7 +959,7 @@ const TweaksPanel = ({ open, heroLayout, setHeroLayout, heroImageY, setHeroImage
         <div className="tweak-row">
           <span className="tweak-label">Reveal Duration — {revealDuration}ms</span>
           <input type="range" min="200" max="800" step="50" value={revealDuration}
-          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
           onChange={(e) => {const v = Number(e.target.value);setRevealDuration(v);post({ revealDuration: v });}} />
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
             <span>200</span><span>800</span>
@@ -968,7 +968,7 @@ const TweaksPanel = ({ open, heroLayout, setHeroLayout, heroImageY, setHeroImage
         <div className="tweak-row">
           <span className="tweak-label">Stagger — {stagger}ms</span>
           <input type="range" min="0" max="200" step="10" value={stagger}
-          style={{ width: '100%', accentColor: '#1363C4', cursor: 'pointer' }}
+          style={{ width: '100%', accentColor: '#2D68C4', cursor: 'pointer' }}
           onChange={(e) => {const v = Number(e.target.value);setStagger(v);post({ stagger: v });}} />
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#aaa', marginTop: 2 }}>
             <span>0</span><span>200</span>
@@ -1025,10 +1025,10 @@ const App = () => {
       <div style={{ position: 'relative', zIndex: 1, background: '#fff', marginBottom: '100svh' }}>
         <Nav cartCount={cart} scrolled={scrolled} onCartOpen={() => {}} />
         <Hero onShop={toShop} layout={heroLayout} imageY={heroImageY} animDuration={heroAnimDuration} delay1={heroDelay1} delay2={heroDelay2} delay3={heroDelay3} />
-        <Ticker bg='#1363C4' textColor='#E7E988' items={tickerItems} speed={26} />
+        <Ticker bg='#2D68C4' textColor='#E7E988' items={tickerItems} speed={26} />
         <StickyScroll onProduct={setProduct} cardGap={cardGap} />
         <ProductGrid onProduct={setProduct} revealDelay={revealDelay} revealDuration={revealDuration} stagger={stagger} />
-        <Ticker bg='#1363C4' textColor='rgba(255,255,255,.85)' items={tickerItems} speed={20} />
+        <Ticker bg='#2D68C4' textColor='rgba(255,255,255,.85)' items={tickerItems} speed={20} />
         <LifestyleBand onProduct={setProduct} />
         <EditorialFeature onProduct={setProduct} />
       </div>
