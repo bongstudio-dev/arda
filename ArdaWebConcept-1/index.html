@@ -981,8 +981,8 @@ const Footer = () => {
           <path d="M801.528 169.984C798.493 163.208 797.14 155.016 797.14 144.791V59.9942C797.14 23.1189 763.529 0 711.77 0C660.011 0 630.85 22.6261 627.979 58.1463C627.733 61.3288 630.317 64.039 633.496 64.039H681.748C684.578 64.039 686.957 61.9037 687.223 59.0908C688.638 44.0204 696.964 35.2327 715.133 35.2327C735.23 35.2327 740.582 46.2994 740.582 66.0716V68.0837C740.582 94.5494 622.401 67.0777 622.401 133.437C622.401 162.941 646.517 181.379 682.671 181.379C709.453 181.379 729.221 170.99 740.931 154.236V155.57C741.505 162.53 745.36 171.523 749.646 175.979C750.692 177.067 752.127 177.683 753.645 177.683H796.483L796.443 177.642C800.4 177.642 803.148 173.577 801.528 169.984ZM740.582 105.76V108.655C740.582 132.102 726.207 148.199 705.105 148.199C691.366 148.199 681.666 140.828 681.666 128.755C681.666 108.224 710.745 107.546 733.405 100.504C736.973 99.3949 740.582 102.023 740.582 105.76Z" fill="#E7E988" />
         </svg>
       </div>
-      {/* Textos debajo del logo */}
-      <div ref={gridRef} className="footer-pad" style={{ padding: '32px 48px 40px', flexShrink: 0 }}>
+      {/* Textos al fondo */}
+      <div ref={gridRef} className="footer-pad" style={{ padding: '32px 48px 40px', flexShrink: 0, marginTop: 'auto' }}>
         <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: '1.6fr 1fr 1fr 1fr', gap: 40 }}>
           <div>
             <p style={{ color: 'rgba(255,255,255,.6)', fontSize: 14, lineHeight: 1.8, marginBottom: 28, fontWeight: 400, maxWidth: 260 }}>Activewear femenino de alto impacto. Hecho en Chile, diseñado para moverse.</p>
